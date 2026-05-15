@@ -23,7 +23,7 @@ PiRouter Pro is a professional Raspberry Pi router dashboard and backend managem
 ## Installation
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/pirouter-pro.git
+git clone https://github.com/OneByJorah/pirouter-pro.git
 cd pirouter-pro
 pip install -r requirements.txt
 sudo python3 app.py
