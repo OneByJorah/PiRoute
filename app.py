@@ -10,7 +10,7 @@ import subprocess, psutil, json, os, time, sqlite3, threading
 from datetime import datetime, timedelta
 from pathlib import Path
 
-app = Flask(__name__, template_folder='templates', static_folder='static')
+app = Flask(__name__, template_folder='template', static_folder='static')
 
 DB_PATH = '/var/lib/pirouter/traffic.db'
 
