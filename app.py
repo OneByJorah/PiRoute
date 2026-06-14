@@ -253,6 +253,32 @@ def api_reboot():
     run_cmd('sleep 2 && sudo reboot &')
     return jsonify({'ok': True})
 
+@app.route('/api/logs', methods=['GET', 'POST'])
+def api_logs():
+    """View service logs"""
+    svc = request.args.get('service', request.form.get('service', 'system'))
+    lines = []
+    
+    log_files = {
+        'system': '/var/log/syslog',
+        'warp': '~/.config/cloudflare/warp.log',
+        'wireguard': '/var/log/wireguard/wg0.log',
+        'mesh-vpn': '/var/log/mesh-vpn/log.txt',
+        'nordvpn': '~/.nordvpn/nordvpn.log',
+        'netbird': '/var/log/netbird.log',
+    }
+    
+    if svc in log_files:
+        try:
+            import subprocess
+            result = subprocess.run(['sudo', 'tail', '-n', '200', log_files[svc]],
+                                    capture_output=True, text=True, timeout=10)
+            lines = result.stdout.strip().split('\n')[-50:]
+        except Exception as e:
+            lines = [f'Error: {str(e)}']
+    
+    return jsonify({'lines': lines, 'service': svc})
+
 if __name__ == '__main__':
     init_db()
     t = threading.Thread(target=record_traffic, daemon=True)
