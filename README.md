@@ -1,45 +1,75 @@
-# 🚀 PiRouter Pro
+# 📡 PiRouter Pro — Professional Router Dashboard
 
-> 🚀 **PiRouter Pro** - Professional Raspberry Pi Router Dashboard with Multi-VPN Support
+[![Python 3.9+](https://img.shields.io/badge/Python-3.9+-3498db.svg?logo=python)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../LICENSE)
+[![Flask](https://img.shields.io/badge/Flask-2.2+-blue?logo=flask)](https://flask.palletsprojects.com/)
+[![Status: Stable](https://img.shields.io/badge/Status-Stable-success)](https://github.com/OneByJorah/PiRouter-Pro)
+[![Maintained by OneByJorah](https://img.shields.io/badge/Maintained%20by-OneByJorah-1E90FF?logo=github)](https://github.com/OneByJorah)
+
+---
+
+## 📋 Overview
+
+**PiRouter Pro** is a professional-grade router monitoring and management dashboard for Raspberry Pi and similar Linux devices. It provides real-time system monitoring, multi-VPN control (WARP, WireGuard, Tailscale, NordVPN, NetBird, UniFi Teleport), traffic analytics, client tracking, and complete system control from a beautiful, responsive web interface.
+
+> **Built with ❤️ by [JorahOne Services](https://jorahoneservices.com/) for MSPs, home labs, and network engineers.**
+
+---
 
 ## ✨ Features
 
-- 📊 **Real-time System Monitoring** - CPU, memory, temperature, network traffic
-- 🌐 **Multi-VPN Management** - WireGuard, Cloudflare WARP, Tailscale, NordVPN, NetBird, UniFi Teleport
-- 📱 **Client Monitoring** - Track connected devices and IP assignments
-- 📈 **Traffic Analytics** - Historical traffic data with Chart.js visualization
-- ⚡ **Internet Speed Tests** - Built-in speed testing
-- 🔍 **System Logs** - View logs for all VPN services
-- ⚙️ **Router Controls** - Reboot and settings management
+| Category | Features |
+|----------|----------|
+| **System Monitoring** | CPU usage, memory, disk, temperature, network I/O, active clients count |
+| **VPN Management** | Start/stop WireGuard, Cloudflare WARP, Tailscale, NordVPN, NetBird, UniFi Teleport |
+| **Traffic Analytics** | Historical traffic data with 15min/1h/2h bucketing and Chart.js visualizations |
+| **Client Tracking** | Real-time connected device monitoring via dnsmasq leases |
+| **Speed Testing** | Built-in speedtest with download/upload metrics |
+| **Tailscale Exit Nodes** | Manage Tailscale exit nodes with one-click selection |
+| **Log Viewer** | View system, WARP, WireGuard, Tailscale, NordVPN, NetBird logs |
+| **System Control** | Reboot the router via API |
+| **API Access** | Full REST API for integration with other tools |
+
+---
 
 ## 🛠️ Tech Stack
 
-- Python 3.9+
-- Flask (Backend API)
-- SQLite (Database)
-- Chart.js (Visualizations)
-- HTML5/CSS3/JavaScript (Frontend)
+- **Backend**: Python 3.9+ with Flask
+- **Database**: SQLite (lightweight, no external dependencies)
+- **Frontend**: Vanilla HTML5 + CSS3 + JavaScript
+- **Charts**: Chart.js for traffic visualizations
+- **Monitoring**: psutil for system metrics
+- **UI Framework**: None (custom dark theme)
+
+---
 
 ## 📋 Prerequisites
 
-- Raspberry Pi 3/4 or compatible Linux device
-- Python 3.9+
-- Root/sudo access
-- VPN clients installed (WireGuard, Tailscale, etc.)
+| Requirement | Details |
+|-------------|----------|
+| **OS** | Raspberry Pi OS, Ubuntu 22.04 LTS, or compatible Linux |
+| **Python** | 3.9 or higher |
+| **Permissions** | Root/sudo access (for VPN commands) |
+| **VPN Clients** | WireGuard, Cloudflare WARP, Tailscale, etc. installed |
+
+---
 
 ## 🚀 Quick Start
 
 ### Installation
 
 ```bash
-git clone https://github.com/OneByJorah/pirouter-pro.git
-cd pirouter-pro
+# Clone the repository
+git clone https://github.com/OneByJorah/PiRouter-Pro.git
+cd PiRouter-Pro
 
-# Install dependencies
+# Install Python dependencies
 pip3 install -r requirements.txt
 
-# Optional: Install system dependencies
-sudo apt-get install -y wireguard tailscale
+# Optional: Install VPN clients
+sudo apt install wireguard
+curl -fsSL https://tailscale.com/install.sh | sh
+# Install Cloudflare WARP from https://cloudflare.com/warp
 
 # Start the dashboard
 sudo ./start.sh
@@ -59,13 +89,15 @@ For remote access, configure your firewall:
 sudo ufw allow 5000
 ```
 
+---
+
 ## 📖 Detailed Installation
 
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/OneByJorah/pirouter-pro.git
-cd pirouter-pro
+git clone https://github.com/OneByJorah/PiRouter-Pro.git
+cd PiRouter-Pro
 ```
 
 ### 2. Install Dependencies
@@ -100,43 +132,55 @@ sudo systemctl start pirouter
 sudo systemctl status pirouter
 ```
 
+---
+
 ## 🎨 Dashboard Pages
 
-- **Overview** - Real-time system stats and active VPN status
-- **Traffic History** - Historical network traffic with charts
-- **Clients** - Connected device monitoring
-- **VPN Control** - Start/stop VPN services
-- **Tailscale** - Manage Tailscale exit nodes
-- **Speed Test** - Test internet speed
-- **Logs** - View system and VPN logs
-- **Settings** - Configuration options
+| Page | Description |
+|------|-------------|
+| **Overview** | Real-time system stats (CPU, memory, temp, network, active VPNs) |
+| **Traffic History** | Historical network traffic with Chart.js visualizations (24h/3d/7d) |
+| **Clients** | Connected device monitoring via dnsmasq leases |
+| **VPN Control** | Start/stop all VPN services with one-click controls |
+| **Tailscale** | Manage Tailscale exit nodes with intelligent selection |
+| **Speed Test** | Test internet download and upload speed |
+| **Logs** | View system and VPN service logs in real-time |
+| **Settings** | Configuration options and API documentation |
+
+---
 
 ## 🔌 VPN Support
 
 | VPN | Command | Status Check |
 |-----|---------|--------------|
 | Cloudflare WARP | `warp-cli connect` | `warp-cli status` |
-| WireGuard | `wg-quick up wg0` | `wg show wg0` |
+| WireGuard | `wg-quick up wg0` | `wg show wg0 2>/dev/null` |
 | Tailscale | `tailscale up` | `tailscale status` |
 | NordVPN | `nordvpn connect` | `nordvpn status` |
-| NetBird | `netbird up` | `netbird status` |
-| UniFi Teleport | `wg-quick up unifi` | `wg show unifi` |
+| NetBird | `netbird up` | `netbird status 2>/dev/null` |
+| UniFi Teleport | `wg-quick up unifi` | `wg show unifi 2>/dev/null` |
+
+---
 
 ## ⚙️ Configuration
 
 Edit `app.py` to customize:
 
-- Database path (`DB_PATH`)
-- Port (`port=5000`)
+- **Database path**: `DB_PATH = '/var/lib/pirouter/traffic.db'`
+- **Port**: `port=5000` in `app.run()`
+- **External IP service**: Line 101 in `app.py` (uses ifconfig.me by default)
+
+---
 
 ## 📡 Network Configuration
 
 ### External IP Display
 
-The dashboard shows your external IP using `ifconfig.me`. To use a different service, edit line 101 in `app.py`:
+The dashboard shows your external IP using `ifconfig.me`. To use a different service:
 
 ```python
-ext_ip, _ = run_cmd("curl -s --max-time 3 ipv4.icanhazip.com")
+# Line 101 in app.py
+ext_ip, _ = run_cmd("curl -s --max-time 3 ifconfig.me")
 ```
 
 ### Traffic Database Location
@@ -147,6 +191,8 @@ Change the database path in `app.py`:
 DB_PATH = '/var/lib/pirouter/custom.db'
 ```
 
+---
+
 ## 🛠️ API Reference
 
 ### GET Endpoints
@@ -155,20 +201,20 @@ DB_PATH = '/var/lib/pirouter/custom.db'
 |----------|-------------|
 | `/` | Dashboard homepage |
 | `/api/stats` | System stats and VPN status |
-| `/api/traffic?period=24h\|3d\|7d` | Traffic history |
-| `/api/clients` | Connected clients |
+| `/api/traffic?period=24h\|3d\|7d` | Traffic history with bucketing |
+| `/api/clients` | Connected clients list |
 | `/api/tailscale/exit-nodes` | Tailscale exit nodes |
-| `/api/logs?service=system\|warp\|...` | Service logs |
+| `/api/logs?service=system\|warp\|wireguard\|...` | Service logs |
 
 ### POST Endpoints
 
 | Endpoint | Description |
 |----------|-------------|
-| `/api/vpn/<action>/<service>` | Start/stop VPN |
+| `/api/vpn/<action>/<service>` | Start/stop VPN (`start` or `stop`) |
 | `/api/tailscale/set-exit` | Set Tailscale exit node |
 | `/api/reboot` | Reboot the router |
 
-Example:
+**Examples:**
 
 ```bash
 # Start WireGuard
@@ -182,6 +228,8 @@ curl -X POST -H "Content-Type: application/json" \
 # Reboot
 curl -X POST http://localhost:5000/api/reboot
 ```
+
+---
 
 ## 🐛 Troubleshooting
 
@@ -222,15 +270,16 @@ sudo chown -R pi:pi /var/lib/pirouter
 sudo chmod 644 /var/www/pirouter-pro/app.py
 ```
 
+---
+
 ## 🔒 Security Considerations
 
 1. **Run as non-root user**: The service runs with sudo for VPN commands, but the Flask app should run as a regular user.
-
 2. **Firewall**: Only expose port 5000 if necessary. Use SSH tunneling for remote access.
-
 3. **HTTPS**: Consider adding HTTPS with Let's Encrypt for production use.
-
 4. **API Access**: All VPN control commands use sudo. Ensure proper sudoers configuration.
+
+---
 
 ## 📊 Monitoring
 
@@ -241,7 +290,7 @@ The dashboard monitors:
 - CPU usage (4× ARM Cortex cores)
 - Memory usage
 - Disk usage
-- Temperature (Raspberry Pi)
+- Temperature (Raspberry Pi via vcgencmd)
 - Network traffic (RX/TX)
 - Connected clients
 
@@ -250,8 +299,10 @@ The dashboard monitors:
 Traffic is bucketed for efficient storage:
 
 - **24h**: 15-min buckets
-- **3d**: 1-hour buckets  
+- **3d**: 1-hour buckets
 - **7d**: 2-hour buckets
+
+---
 
 ## 🧪 Testing
 
@@ -267,6 +318,8 @@ Test an endpoint:
 curl http://localhost:5000/api/stats
 ```
 
+---
+
 ## 🔄 Updates
 
 ```bash
@@ -275,14 +328,15 @@ git pull origin main
 sudo systemctl restart pirouter
 ```
 
+---
+
 ## 📝 Changelog
 
-- **v1.0.0** - Initial release
-  - Core dashboard functionality
-  - Multi-VPN support
-  - Traffic monitoring
-  - Tailscale exit node management
-  - System logs viewing
+| Version | Changes |
+|---------|---------|
+| **v1.0.0** | Initial release with core dashboard functionality, multi-VPN support, traffic monitoring, Tailscale exit node management, system logs viewing |
+
+---
 
 ## 🤝 Contributing
 
@@ -292,25 +346,36 @@ sudo systemctl restart pirouter
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+---
+
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) file for details
+MIT License - see [LICENSE](../LICENSE) file for details
+
+---
 
 ## 🙏 Acknowledgments
 
 - Flask framework
 - Chart.js for visualizations
 - Community VPN clients
+- Raspberry Pi team for vcgencmd
+
+---
 
 ## 📞 Support
 
 For issues and feature requests, please open an issue on GitHub:
 
-https://github.com/OneByJorah/pirouter-pro/issues
+https://github.com/OneByJorah/PiRouter-Pro/issues
+
+---
 
 ## ⚠️ Disclaimer
 
 This project executes system/network commands with elevated privileges. Review all code before deployment in production environments. Use at your own risk.
+
+---
 
 ## 🌟 Star History
 
