@@ -84,7 +84,7 @@ template_folder='template'
 
 ```bash
 # Quick start
-cd /home/<user>/PiRouter-Pro
+cd /home/<user>/EdgeRouter
 sudo ./start.sh
 
 # Access dashboard
