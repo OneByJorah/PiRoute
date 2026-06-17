@@ -3,7 +3,7 @@
 [![Python 3.9+](https://img.shields.io/badge/Python-3.9+-3498db.svg?logo=python)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../LICENSE)
 [![Flask](https://img.shields.io/badge/Flask-2.2+-blue?logo=flask)](https://flask.palletsprojects.com/)
-[![Status: Stable](https://img.shields.io/badge/Status-Stable-success)](https://github.com/OneByJorah/PiRouter-Pro)
+[![Status: Stable](https://img.shields.io/badge/Status-Stable-success)](https://github.com/OneByJorah/EdgeRouter)
 [![Maintained by OneByJorah](https://img.shields.io/badge/Maintained%20by-OneByJorah-1E90FF?logo=github)](https://github.com/OneByJorah)
 
 ---
@@ -60,8 +60,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/OneByJorah/PiRouter-Pro.git
-cd PiRouter-Pro
+git clone https://github.com/OneByJorah/EdgeRouter.git
+cd EdgeRouter
 
 # Install Python dependencies
 pip3 install -r requirements.txt
@@ -96,8 +96,8 @@ sudo ufw allow 5000
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/OneByJorah/PiRouter-Pro.git
-cd PiRouter-Pro
+git clone https://github.com/OneByJorah/EdgeRouter.git
+cd EdgeRouter
 ```
 
 ### 2. Install Dependencies
@@ -367,7 +367,7 @@ MIT License - see [LICENSE](../LICENSE) file for details
 
 For issues and feature requests, please open an issue on GitHub:
 
-https://github.com/OneByJorah/PiRouter-Pro/issues
+https://github.com/OneByJorah/EdgeRouter/issues
 
 ---
 
