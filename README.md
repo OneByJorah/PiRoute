@@ -1,4 +1,4 @@
-# 📡 PiRouter Pro — Professional Router Dashboard
+# 📡 EdgeRouter — Professional Router Dashboard
 
 [![Python 3.9+](https://img.shields.io/badge/Python-3.9+-3498db.svg?logo=python)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../LICENSE)
@@ -10,7 +10,7 @@
 
 ## 📋 Overview
 
-**PiRouter Pro** is a professional-grade router monitoring and management dashboard for Raspberry Pi and similar Linux devices. It provides real-time system monitoring, multi-VPN control (WARP, WireGuard, Mesh-VPN, NordVPN, NetBird, UniFi Teleport), traffic analytics, client tracking, and complete system control from a beautiful, responsive web interface.
+**EdgeRouter** is a professional-grade router monitoring and management dashboard for Linux edge devices and similar Linux-based routers. It provides real-time system monitoring, multi-VPN control (WARP, WireGuard, Mesh-VPN, NordVPN, NetBird, UniFi Teleport), traffic analytics, client tracking, and complete system control from a beautiful, responsive web interface.
 
 > **Built with ❤️ by [JorahOne Services](https://jorahoneservices.com/) for MSPs, home labs, and network engineers.**
 
