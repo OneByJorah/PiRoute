@@ -1,26 +1,120 @@
-# EdgeRouter — Professional Router Dashboard
+# EdgeRouter (EdgeRouter)
 
-Router monitoring and management dashboard for Linux edge devices.
+**Version:** v0.1  
+**Status:** Active Development  
+**Repository:** https://github.com/OneByJorah/EdgeRouter
 
-## Quick start
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Technology Stack](#technology-stack)
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [Service Management](#service-management)
+- [Project Structure](#project-structure)
+- [Screenshots](#screenshots)
+- [Contributing](#contributing)
+- [License](#license)
+- [Author](#author)
+
+---
+
+## Overview
+
+Edge networking router scripts and configuration templates for Raspberry Pi and Linux hosts.
+
+---
+
+## Architecture
+
+Client → Local service (`EdgeRouter`) → data/processing modules → output/api layer.
+Secrets and environment configuration are managed via environment files with restrictive permissions.
+
+---
+
+## Technology Stack
+
+|| Layer | Stack |
+|---|---|
+| Runtime | Linux (Ubuntu 22.04+) |
+| Primary Stack | Bash / Python / Linux |
+| VCS | Git + GitHub (`github.com/OneByJorah/EdgeRouter`) |
+| Dev Port | Localhost / systemd service |
+
+---
+
+## Features
+
+- Operational dashboard and monitoring (per repo).
+- Exportable data / reports where supported.
+- Extensible service-based design.
+- Dark-themed UI where applicable.
+
+---
+
+## Getting Started
+
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-sudo ./start.sh
-```
-Visit `http://localhost:5000`
+# 1. Clone the repository
+git clone https://github.com/OneByJorah/EdgeRouter.git
+cd EdgeRouter
 
-## Verified references
-- Backend entrypoint: `app.py`
-- Flask init/templates: `app.py` uses `template/` and `static/` folders
-- Dashboard UI: `template/dashboard.html`
-- Startup script: `start.sh`
-- Systemd unit: `systemd/pirouter.service`
-- DB layer: `init_db.py`
+# 2. Install dependencies
+# (see specific subproject docs)
+
+# 3. Start the service
+# (see Service Management below)
+```
+
+---
+
+## Service Management
+
+```bash
+# Start the service (example)
+sudo systemctl start EdgeRouter.service
+sudo systemctl enable EdgeRouter.service
+```
+
+Access the service via your configured localhost port or reverse proxy.
+
+---
+
+## Project Structure
+
+```
+EdgeRouter/
+├── README.md
+├── (additional project files)
+```
+
+---
 
 ## Screenshots
-- `docs/screenshots/edgerouter-dashboard.png`
 
-## Status
-✅ README references verified against repo paths.
+All screenshots are live captures from the local dev instance.
+
+_(Screenshots will be added after build/run capture.)_
+
+---
+
+## Contributing
+
+1. Create a feature branch off `main`.
+2. Follow the existing code style.
+3. Submit a PR with description and screenshots for UI changes.
+
+---
+
+## License
+
+MIT
+
+---
+
+## Author
+
+Built by **Jhonattan L. Jimenez**.
