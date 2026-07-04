@@ -1,149 +1,77 @@
 # EdgeRouter — PiRouter Pro
 
-**Version:** v1.0  
-**Status:** Active Development  
-**Repository:** https://github.com/OneByJorah/EdgeRouter
+**Flask-based router monitoring and management dashboard for Linux edge devices.**
 
----
+![License](https://img.shields.io/badge/License-MIT-FFB300.svg?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Active_Development-FFB300.svg?style=for-the-badge)
+![Language](https://img.shields.io/badge/Language-Python-FFB300.svg?style=for-the-badge)
+![Stack](https://img.shields.io/badge/Stack-Flask_SQLite_psutil-FFB300.svg?style=for-the-badge)
+![Platform](https://img.shields.io/badge/Platform-Linux-FFB300.svg?style=for-the-badge)
 
-## Table of Contents
+EdgeRouter monitors and manages Linux edge devices through a responsive Flask web UI backed by SQLite. It captures real-time traffic, CPU, memory, temperature, VPN status, and connected-client metrics. Built for Raspberry Pi and compatible hosts, it provides persistent time-series history via a lightweight systemd-managed service.
 
-- [Overview](#overview)
-- [Architecture](#architecture)
-- [Technology Stack](#technology-stack)
-- [Features](#features)
-- [Getting Started](#getting-started)
-- [Service Management](#service-management)
-- [Project Structure](#project-structure)
-- [Screenshots](#screenshots)
-- [Contributing](#contributing)
-- [License](#license)
-- [Author](#author)
+- Persistent SQLite-backed metrics history.
+- Background traffic snapshots recorded every minute.
+- Systemd unit for production lifecycle management.
+- Local-only interface with no cloud dependencies.
 
----
-
-## Overview
-
-PiRouter Pro is a Flask-based router monitoring and management dashboard for Linux edge devices (Raspberry Pi and similar hosts). It provides real-time traffic, CPU, memory, temperature, VPN status, and connected-client metrics via a responsive web UI backed by SQLite.
-
-Built for self-hosted edge deployments where visibility into network health matters.
-
----
-
-## Architecture
-
-Browser → Flask backend (`app.py`, port `5000`) → SQLite (`/var/lib/pirouter/traffic.db`) → system metrics (psutil, speedtest-cli) → dashboard templates.
-
-A background thread records traffic snapshots every minute. Systemd is used for production service management.
-
----
-
-## Technology Stack
-
-| Layer | Stack |
-|---|---|
-| Runtime | Linux (Ubuntu 22.04+, Raspberry Pi OS) |
-| Backend | Python / Flask |
-| Database | SQLite (`/var/lib/pirouter/traffic.db`) |
-| Metrics | psutil, speedtest-cli |
-| Frontend | HTML5 Dashboard (template/dashboard.html) |
-| Process Manager | systemd (`systemd/pirouter.service`) |
-| VCS | Git + GitHub (`github.com/OneByJorah/EdgeRouter`) |
-
----
-
-## Features
-
-- **Traffic monitoring**: RX/TX bytes, client counts, CPU, memory, temperature.
-- **VPN status**: tracked in the traffic history.
-- **Speedtest integration**: on-demand bandwidth checks.
-- **Persistent history**: SQLite-backed time-series metrics.
-- **Systemd managed**: production-ready service unit included.
-- **Edge-optimized**: lightweight enough for Raspberry Pi class hardware.
-
----
-
-## Getting Started
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/OneByJorah/EdgeRouter.git
-cd EdgeRouter
-
-# 2. Create virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
-# 3. Initialize data directory (run as root for DB path)
-sudo ./init_db.py
-
-# 4. Start the dashboard
-sudo ./start.sh
-# Or run directly:
-# sudo python3 app.py
-```
-
-Visit `http://localhost:5000`.
-
----
-
-## Service Management
-
-```bash
-# Install systemd unit (copy to /etc/systemd/system/)
-sudo cp systemd/pirouter.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable --now pirouter.service
-
-# Tail logs
-sudo journalctl -u pirouter.service -f
-```
-
----
-
-## Project Structure
+- Start the dashboard with `sudo ./start.sh`.
+- Initialize the SQLite database with `sudo ./init_db.py`.
+- Install the systemd service with `systemctl enable --now pirouter.service`.
+- View live traffic, CPU, memory, and temperature from the web UI.
+- Capture on-demand bandwidth checks via speedtest-cli.
 
 ```
-EdgeRouter/
-├── app.py                 # Flask backend + routes
-├── init_db.py             # SQLite bootstrap
-├── start.sh               # Root startup wrapper
-├── requirements.txt       # Python deps
-├── systemd/
-│   └── pirouter.service   # systemd unit
-├── template/
-│   └── dashboard.html     # Dashboard UI
-├── static/                # CSS/JS assets
-└── docs/screenshots/
-    └── edgerouter-dashboard.png
+Browser → Flask backend (5000) → SQLite (/var/lib/pirouter/traffic.db)
+                                   ├── psutil (system metrics)
+                                   └── speedtest-cli (bandwidth)
+Background thread → records traffic snapshots every 60s
 ```
 
+### Technology Stack
+
+- **Runtime**: Linux (Ubuntu 22.04+, Raspberry Pi OS)
+- **Backend**: Python / Flask
+- **Database**: SQLite
+- **Metrics**: psutil, speedtest-cli
+- **Frontend**: HTML5 Dashboard
+- **Process Manager**: systemd
+- **VCS**: Git + GitHub
+
+### Quickstart
+
+1. Clone the repository.
+   ```bash
+   git clone https://github.com/OneByJorah/EdgeRouter.git
+   cd EdgeRouter
+   ```
+2. Create a virtual environment and install dependencies.
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   pip install -r requirements.txt
+   ```
+3. Initialize the data directory.
+   ```bash
+   sudo ./init_db.py
+   ```
+4. Start the dashboard.
+   ```bash
+   sudo ./start.sh
+   ```
+5. Verify the UI at `http://localhost:5000`.
+
+### Roadmap
+
+- [ ] Add SNMP polling module
+- [ ] Export metrics to Prometheus pushgateway
+- [ ] Add alerting rules for threshold breaches
+- [ ] Provide Docker image for containerized deployment
+
+### License
+
+MIT © JorahOne, LLC
+
 ---
 
-## Screenshots
-
-All screenshots are live captures from the local PiRouter Pro instance.
-
-### Dashboard
-![PiRouter Pro Dashboard](docs/screenshots/edgerouter-dashboard.png)
-
----
-
-## Contributing
-
-1. Create a feature branch off `main`.
-2. Test on a Raspberry Pi or compatible Linux device.
-3. Submit a PR with description and screenshots for UI changes.
-
----
-
-## License
-
-MIT
-
----
-
-## Author
-
-Built by **Jhonattan L. Jimenez**.
+*Built by [JorahOne, LLC](https://github.com/JorahOne-Services) — network security, AD/M365, and infrastructure automation for SMBs and public sector.*
