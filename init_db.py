@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Initialize the PiRouter Pro database."""
 
-import sqlite3
 import os
+import sqlite3
 
-DB_PATH = '/var/lib/pirouter/traffic.db'
+DB_PATH = "/var/lib/pirouter/traffic.db"
 
 def init_db():
-    os.makedirs('/var/lib/pirouter', exist_ok=True)
+    os.makedirs("/var/lib/pirouter", exist_ok=True)
     
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
@@ -28,5 +28,5 @@ def init_db():
     
     print(f"✓ Database initialized at {DB_PATH}")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     init_db()
