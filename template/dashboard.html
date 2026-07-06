@@ -1230,18 +1230,6 @@ initLiveChart();
 fetchStats();
 addActivity('Dashboard loaded','var(--accent)');
 setInterval(fetchStats, 10000);
-
-// Demo: seed some fake data if API unavailable for testing
-// Remove this block on actual Pi
-(function tryDemo(){
-  fetch('/api/stats').catch(()=>{
-    const fakeStats={cpu:42,mem_used:38,mem_total:1024,disk_used:23,disk_total:16,temp:52,net_rx:8589934592,net_tx:2147483648,clients:3,ext_ip:'203.0.113.1',uptime:'up 2 days, 4 hours',hostname:'pirouter'};
-    const fakeVPNs={warp:{name:'Cloudflare WARP',active:true,detail:'Connected via WARP'},wireguard:{name:'WireGuard',active:false,detail:'Inactive'},tailscale:{name:'Tailscale',active:true,detail:'tailscale up, exit node: none'},nordvpn:{name:'NordVPN',active:false,detail:'Inactive'},netbird:{name:'NetBird',active:false,detail:'Inactive'},unifi:{name:'UniFi Teleport',active:false,detail:'Inactive'}};
-    updateStats(fakeStats);
-    updateVPNMini(fakeVPNs);
-    renderVPNGrid(fakeVPNs);
-  });
-})();
 </script>
 </body>
 </html>
