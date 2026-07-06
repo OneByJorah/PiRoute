@@ -18,6 +18,15 @@ app = Flask(__name__, template_folder="template", static_folder="static")
 
 DB_PATH = "/var/lib/pirouter/traffic.db"
 
+# ─── SECURITY HEADERS ──────────────────────────────────────────────────────────
+
+@app.after_request
+def add_security_headers(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Content-Security-Policy"] = "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'"
+    return response
+
 # ─── DATABASE SETUP ────────────────────────────────────────────────────────────
 
 def init_db():
