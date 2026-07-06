@@ -824,6 +824,12 @@ function showPage(id) {
 }
 
 // ── TOAST ──
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
 function toast(msg, type='info') {
   const icons = {info:'ℹ️', success:'✅', error:'❌'};
   const el = document.createElement('div');
@@ -974,7 +980,7 @@ function updateVPNMini(vpns){
   el.innerHTML=Object.entries(vpns).map(([k,v])=>`
     <div style="display:flex;align-items:center;gap:0.6rem;font-size:0.82rem">
       <div style="width:8px;height:8px;border-radius:50%;background:${v.active?colors[k]:'#334155'};${v.active?'box-shadow:0 0 6px '+colors[k]:''}"></div>
-      <span style="flex:1;color:var(--text2)">${v.name}</span>
+      <span style="flex:1;color:var(--text2)">${escapeHtml(v.name)}</span>
       <span style="font-size:0.7rem;color:${v.active?'var(--green)':'var(--text3)'};font-family:var(--mono)">${v.active?'ACTIVE':'OFF'}</span>
     </div>
   `).join('');
@@ -1071,9 +1077,9 @@ async function loadClients(){
     if(!d.clients.length){tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:2rem">No clients connected</td></tr>';return;}
     tbody.innerHTML=d.clients.map((c,i)=>`
       <tr>
-        <td><span style="color:var(--text)">${c.hostname}</span></td>
-        <td style="color:var(--accent2)">${c.ip}</td>
-        <td class="mac-addr">${c.mac}</td>
+        <td><span style="color:var(--text)">${escapeHtml(c.hostname)}</span></td>
+        <td style="color:var(--accent2)">${escapeHtml(c.ip)}</td>
+        <td class="mac-addr">${escapeHtml(c.mac)}</td>
         <td><span style="display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--green)"><div style="width:6px;height:6px;border-radius:50%;background:var(--green)"></div>Connected</span></td>
       </tr>
     `).join('');
@@ -1099,11 +1105,11 @@ function renderVPNGrid(vpns){
       <div class="vpn-header">
         <span style="display:flex;align-items:center;gap:8px">
           <span>${VPN_ICONS[k]||'🔐'}</span>
-          <span class="vpn-name">${v.name}</span>
+          <span class="vpn-name">${escapeHtml(v.name)}</span>
         </span>
         <span class="vpn-status-badge ${v.active?'badge-on':'badge-off'}">${v.active?'Active':'Off'}</span>
       </div>
-      <div class="vpn-detail">${v.detail}</div>
+      <div class="vpn-detail">${escapeHtml(v.detail)}</div>
       <div class="vpn-actions">
         <button class="btn btn-sm btn-primary" onclick="vpnAction('start','${k}')">Connect</button>
         <button class="btn btn-sm btn-danger" onclick="vpnAction('stop','${k}')">Disconnect</button>
@@ -1140,7 +1146,7 @@ function renderExitNodes(nodes){
   if(!nodes.length){el.innerHTML='<div style="color:var(--text3);font-size:0.82rem">No exit nodes available. Enable exit node advertisements in Tailscale admin console.</div>';return;}
   el.innerHTML=nodes.map(n=>`
     <div class="exit-node-item" id="exit-${n.id}">
-      <span style="font-family:var(--mono);font-size:0.82rem">🌍 ${n.name}</span>
+      <span style="font-family:var(--mono);font-size:0.82rem">🌍 ${escapeHtml(n.name)}</span>
       <button class="btn btn-sm" onclick="setExitNode('${n.id}')">Select</button>
     </div>
   `).join('');
@@ -1213,7 +1219,7 @@ async function loadLogs(){
       let cls='';
       if(line.includes('error')||line.includes('Error')||line.includes('ERROR')) cls='log-err';
       else if(line.includes('warn')||line.includes('WARN')) cls='log-warn';
-      return `<span class="${cls}">${line}</span>`;
+      return `<span class="${cls}">${escapeHtml(line)}</span>`;
     }).join('\n');
     el.scrollTop=el.scrollHeight;
   }catch(e){el.textContent='Add /api/logs endpoint to app.py to enable log viewing.';}
