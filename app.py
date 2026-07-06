@@ -282,10 +282,10 @@ def api_logs():
     
     log_files = {
         "system": "/var/log/syslog",
-        "warp": "~/.config/cloudflare/warp.log",
+        "warp": os.path.expanduser("~/.config/cloudflare/warp.log"),
         "wireguard": "/var/log/wireguard/wg0.log",
         "tailscale": "/var/log/tailscale/log.txt",
-        "nordvpn": "~/.nordvpn/nordvpn.log",
+        "nordvpn": os.path.expanduser("~/.nordvpn/nordvpn.log"),
         "netbird": "/var/log/netbird.log",
     }
     
