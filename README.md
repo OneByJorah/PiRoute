@@ -59,7 +59,7 @@ EdgeRouter/
 ├── init_db.py                # Database initialization
 ├── requirements.txt          # Dependencies
 ├── start.sh                  # Startup script
-├── templates/                # Jinja2 HTML templates
+├── template/                # Jinja2 HTML templates
 │   └── dashboard.html        # Main dashboard
 ├── systemd/                  # systemd service files
 ├── docs/                     # Documentation

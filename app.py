@@ -10,13 +10,28 @@ import sqlite3
 import subprocess
 import threading
 import time
+import logging
 
 import psutil
 from flask import Flask, jsonify, render_template, request
 
 app = Flask(__name__, template_folder="template", static_folder="static")
 
+# ─── LOGGING ───────────────────────────────────────────────────────────────────
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logger = logging.getLogger("pirouter")
+
 DB_PATH = "/var/lib/pirouter/traffic.db"
+
+# ─── SECURITY HEADERS ──────────────────────────────────────────────────────────
+
+@app.after_request
+def add_security_headers(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Content-Security-Policy"] = "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'"
+    return response
 
 # ─── DATABASE SETUP ────────────────────────────────────────────────────────────
 
@@ -64,7 +79,7 @@ def record_traffic():
             conn.commit()
             conn.close()
         except Exception as e:
-            pass
+            logger.error("record_traffic: %s", e)
         time.sleep(60)
 
 # ─── HELPERS ───────────────────────────────────────────────────────────────────
@@ -73,7 +88,9 @@ def run_cmd(cmd):
     try:
         r = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=5)
         return r.stdout.strip(), r.returncode == 0
-    except Exception: return "", False
+    except Exception:
+        logger.warning("run_cmd failed: %s", cmd)
+        return "", False
 
 VPN_SERVICES = {
     "warp":      {"name": "Cloudflare WARP", "icon": "cloud",     "color": "#f97316", "check": "warp-cli status",        "start": "warp-cli connect",      "stop": "warp-cli disconnect"},
@@ -265,10 +282,10 @@ def api_logs():
     
     log_files = {
         "system": "/var/log/syslog",
-        "warp": "~/.config/cloudflare/warp.log",
+        "warp": os.path.expanduser("~/.config/cloudflare/warp.log"),
         "wireguard": "/var/log/wireguard/wg0.log",
         "tailscale": "/var/log/tailscale/log.txt",
-        "nordvpn": "~/.nordvpn/nordvpn.log",
+        "nordvpn": os.path.expanduser("~/.nordvpn/nordvpn.log"),
         "netbird": "/var/log/netbird.log",
     }
     
