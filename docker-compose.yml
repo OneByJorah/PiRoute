@@ -1,0 +1,30 @@
+# =============================================================================
+# EdgeRouter (PiRouter Pro) — docker-compose.yml
+# =============================================================================
+
+services:
+  edgerouter:
+    image: jorahone/edgerouter:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: edgerouter
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      # SQLite database persistence
+      - edgerouter_data:/var/lib/pirouter
+    environment:
+      - FLASK_ENV=${FLASK_ENV:-production}
+      - TZ=${TZ:-UTC}
+    networks:
+      - edgerouter_net
+
+volumes:
+  edgerouter_data:
+    driver: local
+
+networks:
+  edgerouter_net:
+    driver: bridge
