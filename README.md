@@ -21,6 +21,11 @@
 
 ---
 
+## 📸 Screenshot
+
+![EdgeRouter Dashboard](docs/screenshot.png)
+*Real-time Raspberry Pi router dashboard with traffic monitoring, VPN status, and client tracking*
+
 ## ✨ Features
 
 - **Real-Time Monitoring** — CPU, memory, temperature, traffic (RX/TX)
