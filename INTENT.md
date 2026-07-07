@@ -1,6 +1,6 @@
 # INTENT.md — J1-PIPELINE Phase -1 (ORACLE)
 
-**Repository:** `OneByJorah/EdgeRouter`
+**Repository:** `OneByJorah/PiRoute`
 **Analysis Date:** 2026-07-05
 **Analyst:** J1-PIPELINE ORACLE (read-only)
 **Status:** Intent Reconstructed
@@ -9,7 +9,7 @@
 
 ## What This System Does
 
-**PiRouter Pro (EdgeRouter)** is a Flask-based web dashboard and management platform for Raspberry Pi-based edge routers. It provides a single-pane-of-glass interface for monitoring and controlling a Linux router's core functions.
+**PiRouter Pro** is a Flask-based web dashboard and management platform for Raspberry Pi-based edge routers. It provides a single-pane-of-glass interface for monitoring and controlling a Linux router's core functions.
 
 ### Services & Capabilities
 
@@ -48,7 +48,7 @@ The original code (initial commit `71d6775`, 2026-05-15) was uploaded as a bulk 
 
 ### What Triggered Development
 
-The JorahOne infrastructure runs on Raspberry Pi edge routers at various locations. The need for a lightweight, self-contained, browser-accessible management interface that could run on a stock Raspberry Pi OS without Docker or additional infrastructure drove the creation of this tool. The repo was originally created under a different name and later renamed to **EdgeRouter** (as seen in the git history: `4e6eeae` through `d7a6335` all deal with renaming references).
+The JorahOne infrastructure runs on Raspberry Pi edge routers at various locations. The need for a lightweight, self-contained, browser-accessible management interface that could run on a stock Raspberry Pi OS without Docker or additional infrastructure drove the creation of this tool. The repo was originally created under a different name and later renamed to **PiRoute** (as seen in the git history: `4e6eeae` through `d7a6335` all deal with renaming references).
 
 The repo has since been standardized through the J1 pipeline: ruff auto-fixes, J1 brand-standard README, dependabot, CodeQL CI/CD, community governance files, and a security audit (`b37569a`).
 
@@ -57,7 +57,7 @@ The repo has since been standardized through the J1 pipeline: ruff auto-fixes, J
 ```
 JorahOne LLC / OneByJorah Organization
 │
-├── EdgeRouter (PiRouter Pro)    ← YOU ARE HERE
+├── PiRoute (PiRouter Pro)    ← YOU ARE HERE
 │   └── Raspberry Pi edge router management dashboard
 │
 ├── Other J1 repos               (infrastructure, security, monitoring, agents)
@@ -65,7 +65,7 @@ JorahOne LLC / OneByJorah Organization
 └── J1-PIPELINE                  (lifecycle management for all repos)
 ```
 
-EdgeRouter fills the **edge device management** niche in the JorahOne ecosystem — providing operational visibility and control for the physical Raspberry Pi routers that connect JorahOne services to the internet.
+PiRoute fills the **edge device management** niche in the JorahOne ecosystem — providing operational visibility and control for the physical Raspberry Pi routers that connect JorahOne services to the internet.
 
 ---
 
@@ -85,7 +85,7 @@ EdgeRouter fills the **edge device management** niche in the JorahOne ecosystem 
 | Code of Conduct | `CODE_OF_CONDUCT.md` — Contributor Covenant v2.1 |
 | Contributing guide | `CONTRIBUTING.md` — PR workflow, style guides, issue labels |
 | Issue/PR templates | `.github/ISSUE_TEMPLATE/` (bug + feature) + `PULL_REQUEST_TEMPLATE.md` |
-| Security audit in history | `b37569a` — "audit(EdgeRouter): sanitize email and path references" |
+| Security audit in history | `b37569a` — "audit(PiRoute): sanitize email and path references" |
 | MIT License | `LICENSE` — standard open-source |
 | Background metric sampling | `app.py` — 60-second daemon thread for time-series data |
 | Production deployment docs | `FIXES.md` — systemd enable/start, journalctl monitoring |
@@ -126,7 +126,7 @@ EdgeRouter fills the **edge device management** niche in the JorahOne ecosystem 
 ## Repository Structure
 
 ```
-EdgeRouter/
+PiRoute/
 ├── app.py                          # Flask web server + background collector (290 lines)
 ├── init_db.py                      # Database initialization script (32 lines)
 ├── start.sh                        # Startup script (20 lines)
@@ -146,7 +146,7 @@ EdgeRouter/
 │
 ├── docs/
 │   └── screenshots/
-│       └── edgerouter-dashboard.png
+│       └── pirouter-dashboard.png
 │
 ├── .github/
 │   ├── dependabot.yml              # pip + npm + docker + actions (weekly)
@@ -168,7 +168,7 @@ EdgeRouter/
 ## Notes
 
 ### Naming Discrepancy
-The repo is named **EdgeRouter** but the project is branded as **PiRouter Pro** throughout the code (app title, README, systemd service description, FIXES.md). The git history shows a rename from the original name to EdgeRouter (commits `4e6eeae` → `d7a6335`), but the internal branding was never updated to match.
+The repo is named **PiRoute** but the project is branded as **PiRouter Pro** throughout the code (app title, README, systemd service description, FIXES.md). The git history shows a rename from the original name to PiRoute (commits `4e6eeae` → `d7a6335`), but the internal branding was never updated to match.
 
 ### Config Drift Findings
 - **Dependabot ecosystem mismatch**: Configured for `npm` and `docker` ecosystems despite no `package.json` or `Dockerfile` existing. Template vestige from J1 repo template.
@@ -177,7 +177,7 @@ The repo is named **EdgeRouter** but the project is branded as **PiRouter Pro** 
 - **Missing `static/` directory**: `app.py` configures `static_folder="static"` but no `static/` directory exists in the repo. The dashboard has no static assets to serve (CSS/JS are inline), so this is harmless but misleading.
 
 ### Security Audit
-Commit `b37569a` ("audit(EdgeRouter): sanitize email and path references") is the most recent commit and represents a security sanitization pass. This is a positive maturity signal.
+Commit `b37569a` ("audit(PiRoute): sanitize email and path references") is the most recent commit and represents a security sanitization pass. This is a positive maturity signal.
 
 ### No Tests
 The repo has zero test files. No unit tests, integration tests, or smoke tests exist. This is the most significant quality gap for a production-classified system.

@@ -8,7 +8,7 @@
 <br>
 
 <div align="center">
-  <h1>📡 PiRouter Pro (EdgeRouter)</h1>
+  <h1>📡 PiRouter Pro</h1>
   <p><strong>Professional Raspberry Pi Router Dashboard & Management Platform</strong></p>
   <p>Real-time edge device monitoring, traffic tracking, VPN status, and network management</p>
   <p>
@@ -35,8 +35,8 @@
 ## 🚀 Quick Start
 
 ```bash
-git clone https://github.com/OneByJorah/EdgeRouter.git
-cd EdgeRouter
+git clone https://github.com/OneByJorah/PiRoute.git
+cd PiRoute
 sudo apt install python3-pip
 pip3 install -r requirements.txt
 sudo python3 app.py
@@ -49,7 +49,7 @@ Open **http://127.0.0.1:5000** in your browser.
 ## 🏗️ Architecture
 
 ```
-EdgeRouter/
+PiRoute/
 ├── app.py                    # Flask web server + background collector
 ├── init_db.py                # Database initialization
 ├── requirements.txt          # Dependencies

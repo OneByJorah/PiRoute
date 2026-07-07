@@ -6,8 +6,8 @@ After=network.target
 Type=simple
 User=pi
 # ⚠️ Update WorkingDirectory and ExecStart to match your clone path
-WorkingDirectory=/home/pi/EdgeRouter
-ExecStart=/usr/bin/python3 /home/pi/EdgeRouter/app.py
+WorkingDirectory=/home/pi/PiRoute
+ExecStart=/usr/bin/python3 /home/pi/PiRoute/app.py
 Restart=always
 RestartSec=10
 StandardOutput=journal
