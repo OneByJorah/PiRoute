@@ -30,7 +30,7 @@
 
 - **Real-Time Monitoring** — CPU, memory, temperature, traffic (RX/TX)
 - **Client Tracking** — Connected clients via dnsmasq lease parsing
-- **VPN Status** — WireGuard, Tailscale, WARP, Netbird, NordVPN
+- **VPN Status** — WireGuard, Mesh-VPN, WARP, Netbird, NordVPN
 - **Speed Testing** — On-demand bandwidth checks via speedtest-cli
 - **Service Management** — Start/stop/restart VPN services
 - **System Controls** — Reboot, log viewing, service status

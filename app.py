@@ -54,7 +54,7 @@ def record_traffic():
             clients_raw, _ = run_cmd("cat /var/lib/misc/dnsmasq.leases 2>/dev/null | wc -l")
             clients = int(clients_raw or 0)
             active_vpns = []
-            for svc, cmd in [("WARP","warp-cli status"),("WireGuard","wg show wg0 2>/dev/null"),("Tailscale","tailscale status"),("NordVPN","nordvpn status"),("NetBird","netbird status 2>/dev/null")]:
+            for svc, cmd in [("WARP","warp-cli status"),("WireGuard","wg show wg0 2>/dev/null"),("Mesh-VPN","mesh-vpn status"),("NordVPN","nordvpn status"),("NetBird","netbird status 2>/dev/null")]:
                 _, ok = run_cmd(cmd)
                 if ok: active_vpns.append(svc)
             vpn_str = ",".join(active_vpns)
@@ -78,7 +78,7 @@ def run_cmd(cmd):
 VPN_SERVICES = {
     "warp":      {"name": "Cloudflare WARP", "icon": "cloud",     "color": "#f97316", "check": "warp-cli status",        "start": "warp-cli connect",      "stop": "warp-cli disconnect"},
     "wireguard": {"name": "WireGuard",        "icon": "shield",    "color": "#ef4444", "check": "wg show wg0 2>/dev/null","start": "wg-quick up wg0",       "stop": "wg-quick down wg0"},
-    "tailscale": {"name": "Tailscale",        "icon": "network",   "color": "#10b981", "check": "tailscale status",       "start": "tailscale up",           "stop": "tailscale down"},
+    "mesh-vpn": {"name": "Mesh-VPN",        "icon": "network",   "color": "#10b981", "check": "mesh-vpn status",       "start": "mesh-vpn up",           "stop": "mesh-vpn down"},
     "nordvpn":   {"name": "NordVPN",          "icon": "lock",      "color": "#8b5cf6", "check": "nordvpn status",         "start": "nordvpn connect",        "stop": "nordvpn disconnect"},
     "netbird":   {"name": "NetBird",          "icon": "router",    "color": "#f59e0b", "check": "netbird status 2>/dev/null","start": "netbird up",          "stop": "netbird down"},
     "unifi":     {"name": "UniFi Teleport",   "icon": "wifi",      "color": "#3b82f6", "check": "wg show unifi 2>/dev/null","start": "wg-quick up unifi",   "stop": "wg-quick down unifi"},
@@ -190,8 +190,8 @@ def get_connected_clients():
             })
     return clients
 
-def get_tailscale_exit_nodes():
-    out, _ = run_cmd("tailscale exit-node list 2>/dev/null")
+def get_mesh-vpn_exit_nodes():
+    out, _ = run_cmd("mesh-vpn exit-node list 2>/dev/null")
     nodes = []
     for line in out.strip().split("\n"):
         parts = line.split()
@@ -229,19 +229,19 @@ def vpn_control(action, service):
     out, ok = run_cmd(cmd)
     return jsonify({"ok": ok, "output": out or ("Connected" if action == "start" else "Disconnected")})
 
-@app.route("/api/tailscale/exit-nodes")
+@app.route("/api/mesh-vpn/exit-nodes")
 def ts_exit_nodes():
-    return jsonify({"nodes": get_tailscale_exit_nodes()})
+    return jsonify({"nodes": get_mesh-vpn_exit_nodes()})
 
-@app.route("/api/tailscale/set-exit", methods=["POST"])
+@app.route("/api/mesh-vpn/set-exit", methods=["POST"])
 def ts_set_exit():
     node = request.json.get("node", "")
     if node == "best":
-        out, ok = run_cmd("/usr/local/bin/tailscale-best-exit.sh")
+        out, ok = run_cmd("/usr/local/bin/mesh-vpn-best-exit.sh")
     elif node == "none":
-        out, ok = run_cmd("tailscale set --exit-node=")
+        out, ok = run_cmd("mesh-vpn set --exit-node=")
     else:
-        out, ok = run_cmd(f"tailscale set --exit-node={node}")
+        out, ok = run_cmd(f"mesh-vpn set --exit-node={node}")
     return jsonify({"ok": ok, "output": out})
 
 @app.route("/api/speedtest")
@@ -267,7 +267,7 @@ def api_logs():
         "system": "/var/log/syslog",
         "warp": "~/.config/cloudflare/warp.log",
         "wireguard": "/var/log/wireguard/wg0.log",
-        "tailscale": "/var/log/tailscale/log.txt",
+        "mesh-vpn": "/var/log/mesh-vpn/log.txt",
         "nordvpn": "~/.nordvpn/nordvpn.log",
         "netbird": "/var/log/netbird.log",
     }
