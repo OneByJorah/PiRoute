@@ -1,0 +1,10 @@
+[
+  {
+    "id": "ER-001",
+    "file": "README.md",
+    "line_range": "66-86",
+    "issue": "README Getting Started uses plain `pip install -r requirements.txt`, which can fail on modern Debian/Ubuntu with PEP 668.",
+    "severity": "medium",
+    "suggested_fix": "Document the venv fallback explicitly, or add `python3 -m venv .venv && ./.venv/bin/pip install -r requirements.txt` as the primary install path."
+  }
+]

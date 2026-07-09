@@ -1,0 +1,5 @@
+[EdgeRouter deploy attempt]
+- pip install -r requirements.txt -> OK (system Python blocked by PEP 668; fallback venv used)
+- ./.venv/bin/python app.py -> started Flask on :5000
+- curl /public -> 200 OK
+Screenshot: docs/screenshots/edgerouter-dashboard.png

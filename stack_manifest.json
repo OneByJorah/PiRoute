@@ -1,0 +1,16 @@
+{
+  "runtime": "Python/Flask",
+  "build_method": "python3 -m venv .venv && ./.venv/bin/pip install -r requirements.txt",
+  "entry_point": "app.py",
+  "dependencies": ["flask", "psutil", "speedtest-cli"],
+  "ports": [5000],
+  "deploy_steps": [
+    "python3 -m venv .venv",
+    "./.venv/bin/pip install -r requirements.txt",
+    "./.venv/bin/python app.py"
+  ],
+  "has_docker": false,
+  "has_compose": false,
+  "has_npm": false,
+  "notes": "Local deploy succeeded on :5000 with venv due to PEP 668."
+}
