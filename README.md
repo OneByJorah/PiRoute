@@ -1,7 +1,5 @@
 <div align="center">
 
-  <img src="https://raw.githubusercontent.com/OneByJorah/PiRoute/main/docs/logo.png" alt="PiRoute Logo" width="120">
-
   # 🍓 PiRoute Pro
 
   **Professional Raspberry Pi Router Dashboard & Management Platform**
@@ -24,9 +22,9 @@
 
 <div align="center">
 
-| Dashboard | Network Map | Traffic Monitor |
-|-----------|-------------|-----------------|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Network Map](docs/screenshots/network-map.png) | ![Traffic](docs/screenshots/traffic.png) |
+![Dashboard](docs/screenshots/dashboard.png)
+
+*Live router dashboard — captured from the running Flask app (real CPU/disk/net stats).*
 
 </div>
 
@@ -88,18 +86,9 @@ python app.py
 
 ### Access the Dashboard
 
-Open **http://raspberrypi:5000** in your browser
+Open **http://localhost:5000** in your browser.
 
-Default credentials: `admin` / `admin`
-
-### Environment Variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `PIROUTE_PORT` | `5000` | Dashboard port |
-| `PIROUTE_HOST` | `0.0.0.0` | Bind address |
-| `NETWORK_INTERFACE` | `eth0` | Primary network interface |
-| `WIFI_INTERFACE` | `wlan0` | WiFi interface |
+> The app binds to `127.0.0.1:5000` and must run as root (it writes to `/var/lib/pirouter/traffic.db` and calls `iptables`/`wg`/etc.). On a Pi: `sudo python3 app.py`. There is **no built-in authentication** — put it behind a reverse proxy if exposed.
 
 ---
 
@@ -153,65 +142,42 @@ Default credentials: `admin` / `admin`
 
 ```
 PiRoute/
-├── app.py                  # Flask application entry
-├── routers/                # Flask blueprints
-│   ├── dashboard.py        # Dashboard routes
-│   ├── network.py          # Network management
-│   ├── firewall.py         # Firewall rules
-│   └── vpn.py              # VPN management
-├── services/               # Business logic
-│   ├── network_manager.py  # Network operations
-│   ├── traffic_monitor.py  # Traffic analysis
-│   └── dhcp_server.py      # DHCP management
-├── templates/              # Jinja2 templates
-├── static/                 # CSS, JS, images
-├── docs/                   # Documentation
-│   └── screenshots/        # Dashboard screenshots
+├── app.py                  # Flask app (all routes) + background traffic recorder
+├── template/
+│   └── dashboard.html      # Jinja2 dashboard template
+├── static/                 # CSS, JS, images (if present)
+├── init_db.py              # DB init helper
 ├── docker-compose.yml      # Docker deployment
-└── requirements.txt        # Python dependencies
+├── Dockerfile              # python:3.x-slim, runs as root
+├── requirements.txt        # flask, psutil, speedtest-cli
+└── docs/screenshots/       # captured from the running server
 ```
 
 ---
 
 ## 🔌 API Reference
 
-### Dashboard
-
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/` | `GET` | Main dashboard |
-| `/api/stats` | `GET` | Network statistics |
-| `/api/devices` | `GET` | Connected devices |
-
-### Network Management
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/interfaces` | `GET` | Network interfaces |
-| `/api/interfaces/<name>/up` | `POST` | Enable interface |
-| `/api/interfaces/<name>/down` | `POST` | Disable interface |
-
-### Firewall
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/firewall/rules` | `GET` | List firewall rules |
-| `/api/firewall/rules` | `POST` | Add firewall rule |
-| `/api/firewall/rules/<id>/delete` | `POST` | Delete rule |
+| `/api/stats` | `GET` | System + VPN status (CPU, mem, disk, net, ext IP, VPN list) |
+| `/api/traffic` | `GET` | Historical traffic rows from SQLite (`?period=24h`) |
+| `/api/clients` | `GET` | Connected clients |
+| `/api/vpn/<action>/<service>` | `POST` | Start/stop a VPN service (WireGuard, WARP, Mesh-VPN, NordVPN, NetBird) |
+| `/api/mesh-vpn/exit-nodes` | `GET` | Mesh-VPN exit-node list |
+| `/api/mesh-vpn/set-exit` | `POST` | Set Mesh-VPN exit node |
+| `/api/speedtest` | `GET` | Run a speedtest (needs `speedtest-cli`) |
+| `/api/reboot` | `POST` | Reboot the host (requires root) |
+| `/api/logs` | GET/POST | Read/post service logs |
 
 ### Example Usage
 
 ```bash
-# Get network stats
-curl http://raspberrypi:5000/api/stats
+# Live stats
+curl http://localhost:5000/api/stats
 
-# Get connected devices
-curl http://raspberrypi:5000/api/devices
-
-# Add firewall rule
-curl -X POST http://raspberrypi:5000/api/firewall/rules \
-  -H "Content-Type: application/json" \
-  -d '{"port": 80, "protocol": "tcp", "action": "accept"}'
+# Traffic history
+curl http://localhost:5000/api/traffic?period=24h
 ```
 
 ---
@@ -221,26 +187,14 @@ curl -X POST http://raspberrypi:5000/api/firewall/rules \
 ### Local Development
 
 ```bash
-# Clone the repository
 git clone https://github.com/OneByJorah/PiRoute.git
 cd PiRoute
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate
-
-# Install dependencies
+python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-
-# Start development server
-python app.py --debug
+sudo python app.py        # binds 127.0.0.1:5000
 ```
 
-### Running Tests
-
-```bash
-pytest
-```
+> There is no test suite yet. Verify by loading the dashboard and the `/api/*` endpoints.
 
 ---
 
