@@ -1,64 +1,128 @@
-# PiRoute
+<div align="center">
+  <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white">
+  <img src="https://img.shields.io/badge/Raspberry%20Pi-A22866?style=for-the-badge&logo=raspberry-pi&logoColor=white">
+  <img src="https://img.shields.io/badge/license-MIT-blue?style=for-the-badge">
+</div>
 
-Professional Raspberry Pi router dashboard — transform your Pi into a network router with web-based management.
+<br>
 
-![status](https://img.shields.io/badge/status-active-FFB300?style=flat-square)
-![language](https://img.shields.io/badge/python-3.10+-0d0d0c?style=flat-square)
-![license](https://img.shields.io/badge/license-MIT-FFB300?style=flat-square)
+<div align="center">
+  <h1>PiRoute</h1>
+  <p><strong>Professional Raspberry Pi Router Dashboard</strong></p>
+  <p>Network routing, firewall, DHCP, DNS, VPN management.</p>
+  <p>
+    <a href="#features">Features</a> •
+    <a href="#quick-start">Quick Start</a> •
+    <a href="#architecture">Architecture</a> •
+    <a href="#contributing">Contributing</a>
+  </p>
+</div>
 
-## Overview
+---
 
-PiRoute is a self-hosted Raspberry Pi router dashboard and management platform. It provides a modern web interface for managing network routing, firewall rules, port forwarding, DHCP, DNS, and VPN on a Raspberry Pi. Features real-time traffic monitoring, device discovery, and Docker deployment.
+## Screenshot
+
+![PiRoute Dashboard](docs/screenshot.png)
+*Raspberry Pi router management dashboard with network monitoring.*
 
 ## Features
 
-- Real-time dashboard with live network statistics
-- Visual network map of connected devices
-- Traffic monitoring with bandwidth usage charts
-- Firewall rule management (iptables/nftables)
-- Port forwarding configuration
-- Built-in DHCP and DNS server management (dnsmasq)
-- VPN support (WireGuard, OpenVPN)
-- Docker Compose deployment
+- **Routing Management** — Configure and monitor network routing rules.
+- **Firewall Control** — iptables/nftables rule management.
+- **DHCP Server** — Built-in DHCP with lease management.
+- **DNS Server** — Local DNS resolution and forwarding.
+- **VPN Support** — WireGuard/OpenVPN configuration.
+- **Traffic Monitoring** — Real-time bandwidth and connection tracking.
+- **Web Dashboard** — Professional management interface.
+- **Raspberry Pi** — Optimized for Pi 4/5.
 
-## Architecture / Tech Stack
+## Quick Start
 
-- **Backend**: Flask (Python 3.10+)
-- **Database**: SQLite
-- **Network**: iptables/nftables, dnsmasq, hostapd
-- **VPN**: WireGuard, OpenVPN
-- **Deployment**: Docker Compose, systemd
-
-## Installation
+### Raspberry Pi
 
 ```bash
 git clone https://github.com/OneByJorah/PiRoute.git
 cd PiRoute
 
-# Docker (recommended)
-docker compose up -d
-
-# Or direct install
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python app.py
+sudo bash setup.sh
+python3 app.py
 ```
 
-Open `http://raspberrypi:5000` (default: `admin` / `admin`).
+Open **http://localhost:5000** in your browser.
+
+### Docker (Testing)
+
+```bash
+docker compose up -d
+```
 
 ## Configuration
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `PIROUTE_PORT` | `5000` | Dashboard port |
-| `PIROUTE_HOST` | `0.0.0.0` | Bind address |
-| `NETWORK_INTERFACE` | `eth0` | Primary network interface |
-| `WIFI_INTERFACE` | `wlan0` | WiFi interface |
+| `WAN_INTERFACE` | `eth0` | WAN network interface |
+| `LAN_INTERFACE` | `eth1` | LAN network interface |
+| `LAN_SUBNET` | `192.168.1.0/24` | LAN subnet |
+| `DHCP_RANGE` | `192.168.1.100-200` | DHCP address range |
+| `DNS_UPSTREAM` | `8.8.8.8` | Upstream DNS server |
+| `VPN_ENABLED` | `false` | Enable VPN support |
+
+## Architecture
+
+```
+Internet ──▶ PiRoute ──▶ LAN Devices
+                │
+                ├──▶ Routing (iptables)
+                ├──▶ Firewall (nftables)
+                ├──▶ DHCP Server
+                ├──▶ DNS Server
+                └──▶ VPN Gateway
+```
+
+## Project Structure
+
+```
+PiRoute/
+├── app.py                 # Flask application
+├── services/
+│   ├── routing.py         # Routing management
+│   ├── firewall.py        # Firewall rules
+│   ├── dhcp.py            # DHCP server
+│   ├── dns.py             # DNS server
+│   └── vpn.py             # VPN management
+├── templates/             # HTML templates
+├── static/                # CSS, JS
+├── setup.sh               # Pi setup script
+├── requirements.txt       # Python dependencies
+└── README.md
+```
+
+## Dashboard Features
+
+| Feature | Description |
+|---------|-------------|
+| **Network Map** | Visual network topology |
+| **Traffic Graphs** | Real-time bandwidth monitoring |
+| **Connected Devices** | List of all DHCP clients |
+| **Firewall Rules** | View and edit iptables rules |
+| **DNS Queries** | Recent DNS resolution log |
+| **VPN Status** | Connected VPN clients |
+
+## Contributing
+
+Contributions are welcome. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community standards.
+
+## Security
+
+For security concerns, see [SECURITY.md](SECURITY.md). Please report vulnerabilities to **info@jorahone.com** — do not use public issues.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT © Jhonattan L. Jimenez
 
 ---
-Part of the JorahOne / J1 ecosystem — Raspberry Pi network routing and management.
+
+<div align="center">
+  <p>Professional Raspberry Pi router dashboard.</p>
+  <p><a href="https://github.com/OneByJorah">@OneByJorah</a></p>
+</div>
