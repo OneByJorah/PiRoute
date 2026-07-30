@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PiRoute — Professional Raspberry Pi Router Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080d1a;
+  --surface: #0d1526;
+  --surface2: #121f35;
+  --surface3: #172540;
+  --border: rgba(99,179,237,0.12);
+  --border2: rgba(99,179,237,0.22);
+  --accent: #3b82f6;
+  --accent2: #60a5fa;
+  --accent3: #38bdf8;
+  --amber: #f59e0b;
+  --green: #10b981;
+  --red: #ef4444;
+  --purple: #8b5cf6;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Inter', sans-serif;
+  --radius: 16px;
+  --radius-sm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(16,185,129,0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ─── NAV ─── */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+}
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.nav-brand-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--accent), var(--purple));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+.nav-links { display: flex; gap: 1.5rem; align-items: center; }
+.nav-links a {
+  color: var(--text2);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--text); }
+
+/* ─── HERO ─── */
+.hero {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 5rem 2rem 4rem;
+  text-align: center;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(59,130,246,0.1);
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 20px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.78rem;
+  color: var(--accent2);
+  font-family: var(--mono);
+  margin-bottom: 1.5rem;
+}
+.hero h1 {
+  font-size: 4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, var(--text) 0%, var(--accent3) 50%, var(--amber) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero p {
+  font-size: 1.15rem;
+  color: var(--text2);
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+.hero-btns { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.7rem 1.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s;
+  font-family: var(--sans);
+  cursor: pointer;
+  border: none;
+}
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 4px 14px rgba(59,130,246,0.3);
+}
+.btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border2);
+}
+.btn-secondary:hover { background: var(--surface2); transform: translateY(-1px); }
+
+/* ─── BADGES ─── */
+.badge-strip {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+.badge-strip img { height: 22px; }
+
+/* ─── SECTIONS ─── */
+section { max-width: 1000px; margin: 0 auto; padding: 4rem 2rem; }
+.section-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent2);
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+}
+.section-sub {
+  color: var(--text2);
+  font-size: 1rem;
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+}
+
+/* ─── FEATURES ─── */
+.features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  transition: all 0.2s;
+}
+.feature-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.feature-icon { font-size: 1.8rem; margin-bottom: 0.75rem; }
+.feature-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; }
+.feature-card p { font-size: 0.85rem; color: var(--text2); line-height: 1.5; }
+
+/* ─── ARCHITECTURE ─── */
+.arch-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  overflow-x: auto;
+}
+.arch-svg { width: 100%; max-width: 900px; display: block; margin: 0 auto; }
+
+/* ─── TECH STACK ─── */
+.tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; }
+.tech-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+.tech-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+
+/* ─── QUICK START ─── */
+.code-block {
+  background: #060b18;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+.code-block .comment { color: var(--text3); }
+.code-block .cmd { color: var(--green); }
+.code-block .str { color: var(--amber); }
+
+/* ─── FOOTER ─── */
+footer {
+  text-align: center;
+  padding: 3rem 2rem;
+  border-top: 1px solid var(--border);
+  color: var(--text3);
+  font-size: 0.85rem;
+}
+footer a { color: var(--accent2); text-decoration: none; }
+
+/* ─── SCREENSHOT ─── */
+.screenshot-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+.screenshot-wrap img { width: 100%; display: block; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 700px) {
+  .hero h1 { font-size: 2.5rem; }
+  .hero { padding: 3rem 1.5rem 2rem; }
+  section { padding: 3rem 1.5rem; }
+  nav { padding: 0.75rem 1rem; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <div class="nav-brand-icon">📡</div>
+    <span>PiRoute</span>
+  </div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#tech">Tech Stack</a>
+    <a href="#quickstart">Quick Start</a>
+    <a href="https://github.com/OneByJorah/PiRoute" target="_blank">GitHub</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">🟢 v2.0 · Production Ready</div>
+  <h1>PiRoute</h1>
+  <p>Professional router dashboard for Raspberry Pi — manage routing, firewall, DHCP, DNS, VPN tunnels, and real-time traffic monitoring from a sleek web interface.</p>
+  <div class="hero-btns">
+    <a class="btn btn-primary" href="#quickstart">🚀 Get Started</a>
+    <a class="btn btn-secondary" href="https://github.com/OneByJorah/PiRoute">📦 View on GitHub</a>
+  </div>
+  <div class="badge-strip">
+    <img src="https://img.shields.io/badge/license-MIT-brightgreen" alt="MIT">
+    <img src="https://img.shields.io/badge/python-3.11+-blue" alt="Python 3.11+">
+    <img src="https://img.shields.io/badge/Raspberry%20Pi-4%2F5-red" alt="Pi 4/5">
+    <img src="https://img.shields.io/badge/docker-ready-2496ED?logo=docker" alt="Docker">
+    <img src="https://img.shields.io/badge/vpn-WireGuard%2FWARP%2FNordVPN-8b5cf6" alt="VPN">
+  </div>
+</section>
+
+<!-- SCREENSHOT -->
+<section>
+  <div class="screenshot-wrap">
+    <img src="screenshot.png" alt="PiRoute Dashboard Screenshot">
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-label">⚡ Capabilities</div>
+  <h2 class="section-title">Enterprise-Grade Routing<br>on a Raspberry Pi</h2>
+  <p class="section-sub">Full-featured network management dashboard with real-time monitoring, multi-VPN support, and system oversight.</p>
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-icon">📡</div>
+      <h3>Routing Management</h3>
+      <p>Configure and monitor network routing rules, NAT, and port forwarding with iptables/nftables.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <h3>Firewall Control</h3>
+      <p>Manage iptables and nftables rules through an intuitive interface with preset profiles.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌐</div>
+      <h3>DHCP &amp; DNS</h3>
+      <p>Built-in DHCP server with lease management and local DNS resolution with forwarding.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔐</div>
+      <h3>Multi-VPN Gateway</h3>
+      <p>WireGuard, Cloudflare WARP, NordVPN, NetBird, Mesh-VPN, and UniFi Teleport — all in one dashboard.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Traffic Monitoring</h3>
+      <p>Real-time bandwidth graphs (live 30-min view), historical traffic (24h/3d/7d), and per-second throughput.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Speed Test</h3>
+      <p>Built-in internet speed test with history tracking — measure download and upload from the dashboard.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌡️</div>
+      <h3>System Health</h3>
+      <p>CPU, memory, disk, temperature monitoring with visual gauges and historical charts.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📱</div>
+      <h3>Client Management</h3>
+      <p>View all connected DHCP clients with hostname, IP, and MAC address details.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section id="architecture">
+  <div class="section-label">🏗️ Architecture</div>
+  <h2 class="section-title">Route Flow</h2>
+  <p class="section-sub">How network traffic flows through PiRoute from internet to LAN devices, with all management layers.</p>
+  <div class="arch-wrap">
+    <svg class="arch-svg" viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" font-family="'Inter',sans-serif">
+      <defs>
+        <linearGradient id="g-blue" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#2563eb"/></linearGradient>
+        <linearGradient id="g-cyan" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#0891b2"/></linearGradient>
+        <linearGradient id="g-purple" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+        <linearGradient id="g-amber" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#d97706"/></linearGradient>
+        <linearGradient id="g-green" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#059669"/></linearGradient>
+        <linearGradient id="g-surface" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#121f35"/><stop offset="100%" stop-color="#0d1526"/></linearGradient>
+        <filter id="g-glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+
+      <!-- Background -->
+      <rect x="0" y="0" width="900" height="340" rx="12" fill="url(#g-surface)" opacity="0.5"/>
+
+      <!-- Internet -->
+      <rect x="30" y="110" width="120" height="50" rx="25" fill="url(#g-blue)" filter="url(#g-glow)"/>
+      <text x="90" y="140" text-anchor="middle" fill="white" font-size="14" font-weight="600">Internet</text>
+
+      <!-- Arrow Internet → PiRoute -->
+      <line x1="150" y1="135" x2="190" y2="135" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow-b)"/>
+      <polygon points="190,130 200,135 190,140" fill="#3b82f6"/>
+
+      <!-- PiRoute Box -->
+      <rect x="210" y="75" width="150" height="200" rx="14" fill="#0d1526" stroke="rgba(59,130,246,0.25)" stroke-width="1.5"/>
+      <rect x="210" y="75" width="150" height="200" rx="14" fill="url(#g-blue)" opacity="0.05"/>
+      <text x="285" y="100" text-anchor="middle" fill="#60a5fa" font-size="11" font-weight="700" letter-spacing="2">PiRoute CORE</text>
+
+      <!-- Route flow inside PiRoute -->
+      <rect x="222" y="115" width="126" height="28" rx="6" fill="url(#g-cyan)" opacity="0.9"/>
+      <text x="285" y="134" text-anchor="middle" fill="white" font-size="11" font-weight="600">Routing (iptables)</text>
+
+      <rect x="222" y="150" width="126" height="28" rx="6" fill="url(#g-purple)" opacity="0.9"/>
+      <text x="285" y="169" text-anchor="middle" fill="white" font-size="11" font-weight="600">Firewall (nftables)</text>
+
+      <rect x="222" y="185" width="126" height="28" rx="6" fill="url(#g-amber)" opacity="0.9"/>
+      <text x="285" y="204" text-anchor="middle" fill="white" font-size="11" font-weight="600">NAT / Forwarding</text>
+
+      <rect x="222" y="220" width="126" height="28" rx="6" fill="url(#g-green)" opacity="0.9"/>
+      <text x="285" y="239" text-anchor="middle" fill="white" font-size="11" font-weight="600">VPN Gateway</text>
+
+      <!-- Arrow PiRoute → Services -->
+      <line x1="360" y1="135" x2="400" y2="135" stroke="#64748b" stroke-width="1.5"/>
+      <line x1="360" y1="164" x2="400" y2="164" stroke="#64748b" stroke-width="1.5"/>
+      <line x1="360" y1="199" x2="400" y2="199" stroke="#64748b" stroke-width="1.5"/>
+      <line x1="360" y1="234" x2="400" y2="234" stroke="#64748b" stroke-width="1.5"/>
+
+      <!-- Services Column -->
+      <rect x="410" y="85" width="240" height="180" rx="12" fill="#0d1526" stroke="rgba(99,179,237,0.12)" stroke-width="1"/>
+      <text x="530" y="108" text-anchor="middle" fill="#64748b" font-size="10" font-weight="600" letter-spacing="1.5">NETWORK SERVICES</text>
+
+      <rect x="420" y="118" width="220" height="22" rx="4" fill="#172540"/>
+      <text x="530" y="134" text-anchor="middle" fill="#94a3b8" font-size="10">DHCP Server · Lease Management</text>
+      <rect x="420" y="144" width="220" height="22" rx="4" fill="#172540"/>
+      <text x="530" y="160" text-anchor="middle" fill="#94a3b8" font-size="10">DNS Server · Caching &amp; Forwarding</text>
+      <rect x="420" y="170" width="220" height="22" rx="4" fill="#172540"/>
+      <text x="530" y="186" text-anchor="middle" fill="#94a3b8" font-size="10">Traffic Monitor · Bandwidth Graphs</text>
+      <rect x="420" y="196" width="220" height="22" rx="4" fill="#172540"/>
+      <text x="530" y="212" text-anchor="middle" fill="#94a3b8" font-size="10">Speed Test · Latency Check</text>
+      <rect x="420" y="222" width="220" height="22" rx="4" fill="#172540"/>
+      <text x="530" y="238" text-anchor="middle" fill="#94a3b8" font-size="10">System Monitor · CPU/Mem/Temp</text>
+
+      <!-- Arrow Services → LAN -->
+      <line x1="650" y1="170" x2="690" y2="170" stroke="#10b981" stroke-width="2"/>
+      <polygon points="690,165 700,170 690,175" fill="#10b981"/>
+
+      <!-- LAN Devices -->
+      <rect x="710" y="130" width="160" height="80" rx="16" fill="#0d1526" stroke="rgba(16,185,129,0.3)" stroke-width="1.5"/>
+      <text x="790" y="155" text-anchor="middle" fill="#10b981" font-size="12" font-weight="600">LAN Devices</text>
+      <circle cx="730" cy="180" r="6" fill="#10b981" opacity="0.5"/>
+      <circle cx="755" cy="180" r="6" fill="#10b981" opacity="0.7"/>
+      <circle cx="780" cy="180" r="6" fill="#10b981" opacity="0.9"/>
+      <circle cx="805" cy="180" r="6" fill="#10b981"/>
+      <circle cx="830" cy="180" r="6" fill="#10b981" opacity="0.6"/>
+      <circle cx="855" cy="180" r="6" fill="#10b981" opacity="0.4"/>
+
+      <!-- Dashboard layer at bottom -->
+      <rect x="210" y="285" width="650" height="38" rx="10" fill="url(#g-cyan)" opacity="0.08" stroke="rgba(6,182,212,0.2)" stroke-width="1"/>
+      <text x="535" y="310" text-anchor="middle" fill="#06b6d4" font-size="13" font-weight="600">🖥️  Flask Web Dashboard  ·  Chart.js Analytics  ·  REST API  ·  Dark Theme UI</text>
+
+      <!-- Legend -->
+      <rect x="30" y="285" width="140" height="38" rx="10" fill="#0d1526" stroke="rgba(99,179,237,0.1)" stroke-width="1"/>
+      <rect x="40" y="298" width="8" height="8" rx="2" fill="url(#g-blue)"/>
+      <text x="54" y="306" fill="#64748b" font-size="9">Data Plane</text>
+      <rect x="95" y="298" width="8" height="8" rx="2" fill="url(#g-cyan)"/>
+      <text x="109" y="306" fill="#64748b" font-size="9">Control Plane</text>
+    </svg>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section id="tech">
+  <div class="section-label">🔧 Technology</div>
+  <h2 class="section-title">Tech Stack</h2>
+  <p class="section-sub">Built with modern, battle-tested technologies for reliability and performance.</p>
+  <div class="tech-grid">
+    <div class="tech-item"><span class="tech-dot" style="background:#3b82f6"></span>Python 3.11+</div>
+    <div class="tech-item"><span class="tech-dot" style="background:#22c55e"></span>Flask</div>
+    <div class="tech-item"><span class="tech-dot" style="background:#f59e0b"></span>Chart.js</div>
+    <div class="tech-item"><span class="tech-dot" style="background:#8b5cf6"></span>SQLite</div>
+    <div class="tech-item"><span class="tech-dot" style="background:#06b6d4"></span>psutil</div>
+    <div class="tech-item"><span class="tech-dot" style="background:#ef4444"></span>iptables / nftables</div>
+    <div class="tech-item"><span class="tech-dot" style="background:#10b981"></span>WireGuard</div>
+    <div class="tech-item"><span class="tech-dot" style="background:#64748b"></span>Docker</div>
+    <div class="tech-item"><span class="tech-dot" style="background:#a855f7"></span>Cloudflare WARP</div>
+    <div class="tech-item"><span class="tech-dot" style="background:#f97316"></span>NordVPN</div>
+    <div class="tech-item"><span class="tech-dot" style="background:#fbbf24"></span>NetBird</div>
+    <div class="tech-item"><span class="tech-dot" style="background:#34d399"></span>speedtest-cli</div>
+  </div>
+</section>
+
+<!-- QUICK START -->
+<section id="quickstart">
+  <div class="section-label">🚀 Quick Start</div>
+  <h2 class="section-title">Get Running in Minutes</h2>
+  <p class="section-sub">Deploy on a Raspberry Pi 4/5 or test locally with Docker.</p>
+
+  <h3 style="font-size:1rem;font-weight:600;margin-bottom:0.75rem;color:var(--accent2)">🐧 Raspberry Pi</h3>
+  <div class="code-block">
+    <span class="comment"># Clone and run</span><br>
+    <span class="cmd">git clone</span> https://github.com/OneByJorah/PiRoute.git<br>
+    <span class="cmd">cd</span> PiRoute<br>
+    <span class="cmd">sudo bash setup.sh</span><br>
+    <span class="cmd">python3 app.py</span><br><br>
+    <span class="comment"># Open http://localhost:5000</span>
+  </div>
+
+  <h3 style="font-size:1rem;font-weight:600;margin-bottom:0.75rem;color:var(--accent2)">🐳 Docker (Testing)</h3>
+  <div class="code-block">
+    <span class="cmd">docker compose up -d</span><br>
+    <span class="comment"># Open http://localhost:5000</span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Built with 🌴 by <a href="https://github.com/OneByJorah">OneByJorah</a> · <a href="https://jorahone.com">jorahone.com</a></p>
+  <p style="margin-top:0.5rem;font-size:0.78rem">MIT License · Copyright © Jhonattan L. Jimenez</p>
+</footer>
+
+</body>
+</html>
