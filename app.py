@@ -6,6 +6,7 @@ Run as root: sudo python3 app.py
 """
 
 import os
+import re
 import sqlite3
 import subprocess
 import threading
@@ -190,7 +191,7 @@ def get_connected_clients():
             })
     return clients
 
-def get_mesh-vpn_exit_nodes():
+def get_mesh_vpn_exit_nodes():
     out, _ = run_cmd("mesh-vpn exit-node list 2>/dev/null")
     nodes = []
     for line in out.strip().split("\n"):
@@ -231,7 +232,7 @@ def vpn_control(action, service):
 
 @app.route("/api/mesh-vpn/exit-nodes")
 def ts_exit_nodes():
-    return jsonify({"nodes": get_mesh-vpn_exit_nodes()})
+    return jsonify({"nodes": get_mesh_vpn_exit_nodes()})
 
 @app.route("/api/mesh-vpn/set-exit", methods=["POST"])
 def ts_set_exit():
@@ -240,8 +241,10 @@ def ts_set_exit():
         out, ok = run_cmd("/usr/local/bin/mesh-vpn-best-exit.sh")
     elif node == "none":
         out, ok = run_cmd("mesh-vpn set --exit-node=")
-    else:
+    elif re.fullmatch(r"[A-Za-z0-9._-]{1,64}", node):
         out, ok = run_cmd(f"mesh-vpn set --exit-node={node}")
+    else:
+        return jsonify({"ok": False, "output": "Invalid exit node id"})
     return jsonify({"ok": ok, "output": out})
 
 @app.route("/api/speedtest")

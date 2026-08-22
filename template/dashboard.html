@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PiRouter Pro</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%A1%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -820,7 +821,14 @@ function showPage(id) {
   if(id==='traffic') loadTraffic(currentPeriod, document.querySelector('.period-tab.active'));
   if(id==='clients') loadClients();
   if(id==='vpn') loadVPN();
-  if(id==='mesh-vpn') loadMesh-VPN();
+  if(id==='mesh-vpn') loadMeshVPN();
+}
+
+// ── HTML ESCAPE ──
+function esc(s){
+  const d=document.createElement('div');
+  d.textContent=String(s??'');
+  return d.innerHTML;
 }
 
 // ── TOAST ──
@@ -828,7 +836,7 @@ function toast(msg, type='info') {
   const icons = {info:'ℹ️', success:'✅', error:'❌'};
   const el = document.createElement('div');
   el.className = `toast ${type}`;
-  el.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  el.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${esc(msg)}</span>`;
   document.getElementById('toasts').appendChild(el);
   setTimeout(()=>el.remove(), 4000);
 }
@@ -872,12 +880,15 @@ function fmtMB(mb){
 }
 
 // ── CHART DEFAULTS ──
-Chart.defaults.color='#64748b';
-Chart.defaults.borderColor='rgba(99,179,237,0.1)';
-Chart.defaults.font.family="'JetBrains Mono', monospace";
-Chart.defaults.font.size=10;
+if (typeof Chart !== 'undefined') {
+  Chart.defaults.color='#64748b';
+  Chart.defaults.borderColor='rgba(99,179,237,0.1)';
+  Chart.defaults.font.family="'JetBrains Mono', monospace";
+  Chart.defaults.font.size=10;
+}
 
 function makeChart(id, type, labels, datasets, opts={}) {
+  if (typeof Chart === 'undefined') return null;
   const ctx=document.getElementById(id);
   if(!ctx) return null;
   return new Chart(ctx, {
@@ -970,11 +981,11 @@ function updateStats(s){
 function updateVPNMini(vpns){
   if(!vpns) return;
   const el=document.getElementById('vpn-mini-list');
-  const colors={warp:'#f97316',wireguard:'#ef4444',mesh-vpn:'#10b981',nordvpn:'#8b5cf6',netbird:'#f59e0b',unifi:'#3b82f6'};
+  const colors={warp:'#f97316',wireguard:'#ef4444','mesh-vpn':'#10b981',nordvpn:'#8b5cf6',netbird:'#f59e0b',unifi:'#3b82f6'};
   el.innerHTML=Object.entries(vpns).map(([k,v])=>`
     <div style="display:flex;align-items:center;gap:0.6rem;font-size:0.82rem">
       <div style="width:8px;height:8px;border-radius:50%;background:${v.active?colors[k]:'#334155'};${v.active?'box-shadow:0 0 6px '+colors[k]:''}"></div>
-      <span style="flex:1;color:var(--text2)">${v.name}</span>
+      <span style="flex:1;color:var(--text2)">${esc(v.name)}</span>
       <span style="font-size:0.7rem;color:${v.active?'var(--green)':'var(--text3)'};font-family:var(--mono)">${v.active?'ACTIVE':'OFF'}</span>
     </div>
   `).join('');
@@ -1071,9 +1082,9 @@ async function loadClients(){
     if(!d.clients.length){tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:2rem">No clients connected</td></tr>';return;}
     tbody.innerHTML=d.clients.map((c,i)=>`
       <tr>
-        <td><span style="color:var(--text)">${c.hostname}</span></td>
-        <td style="color:var(--accent2)">${c.ip}</td>
-        <td class="mac-addr">${c.mac}</td>
+        <td><span style="color:var(--text)">${esc(c.hostname)}</span></td>
+        <td style="color:var(--accent2)">${esc(c.ip)}</td>
+        <td class="mac-addr">${esc(c.mac)}</td>
         <td><span style="display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--green)"><div style="width:6px;height:6px;border-radius:50%;background:var(--green)"></div>Connected</span></td>
       </tr>
     `).join('');
@@ -1081,8 +1092,8 @@ async function loadClients(){
 }
 
 // ── VPN ──
-const VPN_COLORS={warp:'#f97316',wireguard:'#ef4444',mesh-vpn:'#10b981',nordvpn:'#8b5cf6',netbird:'#f59e0b',unifi:'#3b82f6'};
-const VPN_ICONS={warp:'☁️',wireguard:'🛡️',mesh-vpn:'🌐',nordvpn:'🔒',netbird:'🕸️',unifi:'📡'};
+const VPN_COLORS={warp:'#f97316',wireguard:'#ef4444','mesh-vpn':'#10b981',nordvpn:'#8b5cf6',netbird:'#f59e0b',unifi:'#3b82f6'};
+const VPN_ICONS={warp:'☁️',wireguard:'🛡️','mesh-vpn':'🌐',nordvpn:'🔒',netbird:'🕸️',unifi:'📡'};
 
 async function loadVPN(){
   try{
@@ -1099,11 +1110,11 @@ function renderVPNGrid(vpns){
       <div class="vpn-header">
         <span style="display:flex;align-items:center;gap:8px">
           <span>${VPN_ICONS[k]||'🔐'}</span>
-          <span class="vpn-name">${v.name}</span>
+          <span class="vpn-name">${esc(v.name)}</span>
         </span>
         <span class="vpn-status-badge ${v.active?'badge-on':'badge-off'}">${v.active?'Active':'Off'}</span>
       </div>
-      <div class="vpn-detail">${v.detail}</div>
+      <div class="vpn-detail">${esc(v.detail)}</div>
       <div class="vpn-actions">
         <button class="btn btn-sm btn-primary" onclick="vpnAction('start','${k}')">Connect</button>
         <button class="btn btn-sm btn-danger" onclick="vpnAction('stop','${k}')">Disconnect</button>
@@ -1125,25 +1136,27 @@ async function vpnAction(action, service){
 }
 
 // ── MESH_VPN ──
-async function loadMesh-VPN(){
+async function loadMeshVPN(){
   try{
     const [nodesR,statsR]=await Promise.all([fetch('/api/mesh-vpn/exit-nodes'),fetch('/api/stats')]);
     const nodesD=await nodesR.json();
     const statsD=await statsR.json();
     renderExitNodes(nodesD.nodes);
-    document.getElementById('ts-status-raw').textContent=statsD.vpns?.mesh-vpn?.detail||'No status';
+    document.getElementById('ts-status-raw').textContent=statsD.vpns?.['mesh-vpn']?.detail||'No status';
   }catch(e){toast('Could not load Mesh-VPN data','error');}
 }
 
 function renderExitNodes(nodes){
   const el=document.getElementById('exit-node-list');
   if(!nodes.length){el.innerHTML='<div style="color:var(--text3);font-size:0.82rem">No exit nodes available. Enable exit node advertisements in Mesh-VPN admin console.</div>';return;}
-  el.innerHTML=nodes.map(n=>`
-    <div class="exit-node-item" id="exit-${n.id}">
-      <span style="font-family:var(--mono);font-size:0.82rem">🌍 ${n.name}</span>
-      <button class="btn btn-sm" onclick="setExitNode('${n.id}')">Select</button>
-    </div>
-  `).join('');
+  el.innerHTML=nodes.map(n=>{
+    const sid=String(n.id).replace(/[^A-Za-z0-9._-]/g,'');
+    return `
+    <div class="exit-node-item" id="exit-${sid}">
+      <span style="font-family:var(--mono);font-size:0.82rem">🌍 ${esc(n.name)}</span>
+      <button class="btn btn-sm" onclick="setExitNode('${sid}')">Select</button>
+    </div>`;
+  }).join('');
 }
 
 async function setExitNode(node){
@@ -1213,7 +1226,7 @@ async function loadLogs(){
       let cls='';
       if(line.includes('error')||line.includes('Error')||line.includes('ERROR')) cls='log-err';
       else if(line.includes('warn')||line.includes('WARN')) cls='log-warn';
-      return `<span class="${cls}">${line}</span>`;
+      return `<span class="${cls}">${esc(line)}</span>`;
     }).join('\n');
     el.scrollTop=el.scrollHeight;
   }catch(e){el.textContent='Add /api/logs endpoint to app.py to enable log viewing.';}
@@ -1230,7 +1243,7 @@ setInterval(fetchStats, 10000);
 (function tryDemo(){
   fetch('/api/stats').catch(()=>{
     const fakeStats={cpu:42,mem_used:38,mem_total:1024,disk_used:23,disk_total:16,temp:52,net_rx:8589934592,net_tx:2147483648,clients:3,ext_ip:'203.0.113.1',uptime:'up 2 days, 4 hours',hostname:'pirouter'};
-    const fakeVPNs={warp:{name:'Cloudflare WARP',active:true,detail:'Connected via WARP'},wireguard:{name:'WireGuard',active:false,detail:'Inactive'},mesh-vpn:{name:'Mesh-VPN',active:true,detail:'mesh-vpn up, exit node: none'},nordvpn:{name:'NordVPN',active:false,detail:'Inactive'},netbird:{name:'NetBird',active:false,detail:'Inactive'},unifi:{name:'UniFi Teleport',active:false,detail:'Inactive'}};
+    const fakeVPNs={warp:{name:'Cloudflare WARP',active:true,detail:'Connected via WARP'},wireguard:{name:'WireGuard',active:false,detail:'Inactive'},'mesh-vpn':{name:'Mesh-VPN',active:true,detail:'mesh-vpn up, exit node: none'},nordvpn:{name:'NordVPN',active:false,detail:'Inactive'},netbird:{name:'NetBird',active:false,detail:'Inactive'},unifi:{name:'UniFi Teleport',active:false,detail:'Inactive'}};
     updateStats(fakeStats);
     updateVPNMini(fakeVPNs);
     renderVPNGrid(fakeVPNs);

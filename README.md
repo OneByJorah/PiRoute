@@ -18,7 +18,7 @@
 ---
 
 <p align="center">
-  <img src="screenshot.png" alt="PiRoute Dashboard Screenshot" width="95%">
+  <img src="docs/screenshots/dashboard.png" alt="PiRoute Dashboard Screenshot" width="95%">
   <br>
   <em>Dark-theme dashboard with real-time system monitoring, VPN controls, speed test, and traffic analytics.</em>
 </p>
@@ -85,11 +85,10 @@
 ```bash
 git clone https://github.com/OneByJorah/PiRoute.git
 cd PiRoute
-sudo bash setup.sh
-python3 app.py
+sudo bash start.sh
 ```
 
-Open **http://localhost:5000** in your browser.
+Open **http://localhost:5000** in your browser. (The app listens on 127.0.0.1; use a reverse proxy for LAN access.)
 
 ### Docker (Testing)
 
@@ -115,7 +114,7 @@ PiRoute/
 ├── app.py                 # Flask application (API + dashboard)
 ├── template/dashboard.html# Single-page dashboard UI
 ├── init_db.py             # Database initialization
-├── setup.sh               # Raspberry Pi setup script
+├── start.sh               # Startup script (init DB + run app)
 ├── docker-compose.yml     # Docker deployment
 ├── Dockerfile             # Container definition
 ├── requirements.txt       # Python dependencies
