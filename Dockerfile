@@ -60,4 +60,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
 
 # Run with gunicorn (production WSGI server)
 # The app uses a background thread for traffic collection, so we use a custom entrypoint
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "--threads", "4", "--timeout", "120", "--access-logfile", "-", "--error-logfile", "-", "app:app"]
+CMD ["gunicorn", "--bind", "<ip-address>:5000", "--workers", "2", "--threads", "4", "--timeout", "120", "--access-logfile", "-", "--error-logfile", "-", "app:app"]
