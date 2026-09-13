@@ -4,40 +4,53 @@
 
 # PiRoute
 
-**Professional Raspberry Pi router dashboard** — manage routing, firewall, DHCP, DNS, multi-VPN tunnels, and real-time traffic from a sleek dark-theme web interface.
+**A Raspberry Pi router dashboard** — manage routing, firewall, DHCP, DNS, multi-VPN tunnels, and live traffic from one dark-theme web UI, for Pi 4/5 gateways.
 
-[![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.11+-blue?logo=python)](https://python.org)
-[![Raspberry Pi](https://img.shields.io/badge/Raspberry%20Pi-4%2F5-red?logo=raspberrypi)](https://raspberrypi.com)
-[![Docker](https://img.shields.io/badge/docker-ready-2496ED?logo=docker)](https://docker.com)
-[![Flask](https://img.shields.io/badge/built%20with-Flask-22c55e?logo=flask)](https://flask.palletsprojects.com)
-[![VPN](https://img.shields.io/badge/vpn-WireGuard%20%7C%20WARP%20%7C%20NordVPN%20%7C%20NetBird-8b5cf6)](https://github.com/OneByJorah/PiRoute)
+<a href="https://github.com/OneByJorah/PiRoute/stargazers"><img src="https://img.shields.io/github/stars/OneByJorah/PiRoute?style=flat-square" alt="Stars"></a>
+<a href="https://github.com/OneByJorah/PiRoute/commits"><img src="https://img.shields.io/github/last-commit/OneByJorah/PiRoute?style=flat-square" alt="Last commit"></a>
+<a href="LICENSE"><img src="https://img.shields.io/github/license/OneByJorah/PiRoute?style=flat-square" alt="License"></a>
+<img src="https://img.shields.io/badge/python-3.11%2B-blue?style=flat-square&logo=python&logoColor=white" alt="Python">
+<img src="https://img.shields.io/badge/flask-22c55e?style=flat-square&logo=flask&logoColor=white" alt="Flask">
+<img src="https://img.shields.io/badge/raspberry%20pi-4%2F5-C51A4A?style=flat-square&logo=raspberrypi&logoColor=white" alt="Raspberry Pi">
 
 </div>
 
----
+![PiRoute screenshot](docs/assets/screenshot.png)
 
-<p align="center">
-  <img src="docs/screenshots/dashboard.png" alt="PiRoute Dashboard Screenshot" width="95%">
-  <br>
-  <em>Dark-theme dashboard with real-time system monitoring, VPN controls, speed test, and traffic analytics.</em>
-</p>
+## What This Is
 
----
+Turning a Raspberry Pi into a router usually means juggling `iptables`, `dnsmasq`, `wg-quick`, and a pile of shell scripts. PiRoute wraps those into a single Flask-backed dashboard with a REST API, so you can see system health, edit rules, control VPN tunnels, and run a speed test without a terminal. It targets Pi 4/5 hardware running Raspberry Pi OS.
+
+## Quick Start
+
+```bash
+git clone https://github.com/OneByJorah/PiRoute.git
+cd PiRoute
+sudo bash start.sh
+```
+
+Open **http://localhost:5000**. The app binds to `127.0.0.1`; put a reverse proxy in front for LAN access.
+
+### Docker (testing)
+
+```bash
+docker compose up -d
+```
+
+> [!WARNING]
+> PiRoute runs system commands (`iptables`, `nftables`, `wg-quick`, `vcgencmd`) and expects root. Run it on a dedicated gateway host — not on a general-purpose machine.
 
 ## Features
 
-| Category | Capabilities |
-|----------|-------------|
-| **Routing** | iptables/nftables rule management, NAT, port forwarding |
-| **Firewall** | Visual rule editor, preset profiles, real-time logging |
-| **DHCP** | Built-in DHCP server with lease management, static assignments |
-| **DNS** | Local caching resolver with upstream forwarding |
-| **Multi-VPN** | WireGuard · Cloudflare WARP · NordVPN · NetBird · Mesh-VPN · UniFi Teleport |
-| **Traffic** | Live 30-min throughput chart, historical 24h/3d/7d bandwidth graphs |
-| **Speed Test** | In-dashboard internet speed measurement with history |
-| **System** | CPU, memory, disk, temperature monitoring with visual gauges |
-| **Clients** | Connected device list with hostname, IP, MAC |
+- **Routing** — iptables/nftables rule management, NAT, and port forwarding.
+- **Firewall** — visual rule editor with preset profiles and real-time logging.
+- **DHCP** — lease management via `dnsmasq` leases, with static assignments.
+- **DNS** — local caching resolver with configurable upstream forwarding.
+- **Multi-VPN** — WireGuard · Cloudflare WARP · NordVPN · NetBird · Mesh-VPN · UniFi Teleport.
+- **Traffic monitoring** — live 30-minute throughput plus 24h/3d/7d bandwidth history stored in SQLite.
+- **Speed test** — in-dashboard internet speed measurement with history.
+- **System telemetry** — CPU, memory, disk, and temperature gauges.
+- **Client list** — connected devices with hostname, IP, and MAC.
 
 ## Architecture
 
@@ -68,44 +81,43 @@
                                     └────────┘ └──────────┘
 ```
 
-## Tech Stack
+## Dashboard Pages
 
-| Layer | Technology |
-|-------|-----------|
-| Backend | Python 3.11+ · Flask · SQLite |
-| Frontend | HTML5 · CSS3 · Chart.js · JetBrains Mono |
-| System | psutil · iptables/nftables · hostapd · dnsmasq |
-| VPN | WireGuard · Cloudflare WARP · NordVPN · NetBird · Mesh-VPN · UniFi |
-| Deploy | Docker · systemd · Raspberry Pi OS |
+| Page | Description |
+|------|-------------|
+| **System Overview** | Real-time CPU, memory, disk, temp, network stats with live throughput chart |
+| **Traffic History** | Bandwidth, CPU, temperature, clients, memory — 24h/3d/7d views |
+| **WiFi Clients** | Connected DHCP clients with hostname, IP, MAC |
+| **VPN Control** | Start/stop individual VPN tunnels with status indicators |
+| **Mesh-VPN** | Exit node selection for the Mesh-VPN network |
+| **Speed Test** | Internet speed measurement with history tracking |
+| **System Logs** | Live log viewer for all services |
+| **Settings** | Hotspot configuration, system actions, reboot |
 
-## Quick Start
+## API Endpoints
 
-### Raspberry Pi 4/5
-
-```bash
-git clone https://github.com/OneByJorah/PiRoute.git
-cd PiRoute
-sudo bash start.sh
-```
-
-Open **http://localhost:5000** in your browser. (The app listens on 127.0.0.1; use a reverse proxy for LAN access.)
-
-### Docker (Testing)
-
-```bash
-docker compose up -d
-```
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/stats` | GET | Current system + VPN stats |
+| `/api/traffic` | GET | Traffic history (period query) |
+| `/api/clients` | GET | Connected DHCP clients |
+| `/api/vpn/<action>/<service>` | POST | Start/stop a VPN service |
+| `/api/mesh-vpn/exit-nodes` | GET | List mesh exit nodes |
+| `/api/mesh-vpn/set-exit` | POST | Set the mesh exit node |
+| `/api/speedtest` | GET | Run a speed test |
+| `/api/logs` | GET/POST | Read service logs |
+| `/api/reboot` | POST | Reboot the host |
 
 ## Configuration
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `WAN_INTERFACE` | `eth0` | WAN network interface |
-| `LAN_INTERFACE` | `eth1` | LAN network interface |
-| `LAN_SUBNET` | `192.168.1.0/24` | LAN subnet |
-| `DHCP_RANGE` | `192.168.1.100-200` | DHCP address range |
-| `DNS_UPSTREAM` | `8.8.8.8` | Upstream DNS server |
-| `VPN_ENABLED` | `false` | Enable VPN support |
+| `FLASK_ENV` | `production` | Flask environment |
+| `TZ` | `UTC` | Container timezone |
+| `WAN_IF` | — | WAN interface (Docker entrypoint) |
+
+> [!NOTE]
+> The SQLite database path is fixed at `/var/lib/pirouter/traffic.db` inside the container. WAN/LAN interfaces and DHCP/DNS settings are managed through the dashboard and system services (`dnsmasq`, `hostapd`) rather than `.env`.
 
 ## Project Structure
 
@@ -116,39 +128,42 @@ PiRoute/
 ├── init_db.py             # Database initialization
 ├── start.sh               # Startup script (init DB + run app)
 ├── docker-compose.yml     # Docker deployment
-├── Dockerfile             # Container definition
+├── docker-entrypoint.sh   # Container entrypoint
 ├── requirements.txt       # Python dependencies
-├── docs/assets/           # Banner, screenshots
 ├── scripts/               # Utility scripts
-├── systemd/               # Systemd service files
+├── systemd/               # systemd service files
+├── docs/assets/           # Banner, screenshots
 └── README.md
 ```
 
-## Dashboard Pages
+## Use Cases
 
-| Page | Description |
-|------|-------------|
-| **System Overview** | Real-time CPU, memory, disk, temp, network stats with live throughput chart |
-| **Traffic History** | Bandwidth, CPU, temperature, clients, memory — 24h/3d/7d views |
-| **WiFi Clients** | All connected DHCP clients with hostname, IP, MAC |
-| **VPN Control** | Start/stop individual VPN tunnels with status indicators |
-| **Mesh-VPN** | Exit node selection for Mesh-VPN network |
-| **Speed Test** | Internet speed measurement with history tracking |
-| **System Logs** | Live log viewer for all services |
-| **Settings** | Hotspot configuration, system actions, reboot |
+1. **Home-lab gateway** — replace a consumer router UI with something scriptable and self-hosted.
+2. **Travel/travel-router** — flip between WARP, WireGuard, and NordVPN from one panel.
+3. **Network learning** — inspect live iptables/nftables and DHCP behavior on real hardware.
+
+## Tech Stack
+
+Python 3.11+ · Flask · SQLite · psutil · Chart.js · HTML5/CSS3 · iptables/nftables · dnsmasq · hostapd · WireGuard/WARP/NordVPN/NetBird · Docker · systemd · Raspberry Pi OS
+
+## Screenshots
+
+| View | |
+|---|---|
+| ![dashboard](docs/screenshots/dashboard.png) | ![traffic](docs/screenshots/traffic.png) |
+| ![network map](docs/screenshots/network-map.png) | ![vpn](docs/screenshots/vpn.png) |
+| ![landing](docs/screenshots/landing.png) | ![mobile](docs/screenshots/main.mobile.png) |
 
 ## Contributing
 
-Contributions welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
-
-## Security
-
-Report vulnerabilities to **info@jorahone.com** — see [SECURITY.md](SECURITY.md).
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). [Open an issue](https://github.com/OneByJorah/PiRoute/issues).
 
 ## License
 
-[MIT License](LICENSE) © Jhonattan L. Jimenez (OneByJorah)
+MIT — see [LICENSE](LICENSE).
 
----
+## Connect
 
-<p align="center">Built with 🌴 by <a href="https://github.com/OneByJorah">OneByJorah</a> · <a href="https://jorahone.com">jorahone.com</a></p>
+- [jorahone.com](https://jorahone.com)
+- [GitHub Org](https://github.com/OneByJorah)
+- [info@jorahone.com](mailto:info@jorahone.com)
