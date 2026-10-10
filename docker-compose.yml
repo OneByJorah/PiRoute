@@ -11,7 +11,7 @@ services:
     container_name: edgerouter
     restart: unless-stopped
     ports:
-      - "5000:5000"
+      - "127.0.0.1:5000:5000"
     volumes:
       # SQLite database persistence
       - edgerouter_data:/var/lib/pirouter
